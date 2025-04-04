@@ -1,3 +1,16 @@
+export interface UseCharacterListReturn {
+    data: Character[];
+    loading: boolean;
+    error: string | null;
+    responseCount: number;
+}
+
+export interface UseCharacterDataReturn {
+    data?: Character;
+    loading: boolean;
+}
+
+
 export interface Character {
     id: string;
     name: string;
@@ -5,7 +18,7 @@ export interface Character {
     species: string;
     gender: string;
     house: string;
-    dateOfBirth: string;
+    dateOfBirth: string | null;
     wizard: boolean;
     ancestry: string;
     eyeColour: string;
@@ -13,7 +26,7 @@ export interface Character {
     wand: {
         wood: string;
         core: string;
-        length: number;
+        length: number | null;
     }
     patronus: string;
     hogwartsStudent: boolean;
