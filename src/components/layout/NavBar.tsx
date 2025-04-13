@@ -102,7 +102,7 @@ function NavBar() {
                                 >
                                     {
                                         NavButtons.map((item, index) => (
-                                            <Link to={item.path}>
+                                            <Link to={item.path} onClick={toggleDrawer(false)}>
                                                 <MenuItem
                                                     key={index}
                                                 >
