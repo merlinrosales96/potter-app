@@ -1,16 +1,21 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { PaletteMode } from '@mui/material';
+import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NavBar from './components/layout/NavBar';
 import Home from './pages/Home';
 import Characters from './components/Characters/Characters';
 import CharacterInfo from './components/Characters/CharacterInfo';
+import Houses from './components/Houses/Houses';
+import CharactersByHouse from './components/Houses/CharactersByHouse';
+import Spells from './components/Spells/Spells';
+import NotFound from './components/404/404';
 import './App.css';
 
 function App() {
 
-  const [mode] = React.useState<PaletteMode>('light');
+  const [mode] = React.useState<PaletteMode>('dark');
 
   const defaultTheme = createTheme({
     typography: {
@@ -18,7 +23,7 @@ function App() {
     },
     palette: {
       mode,
-      ...(mode === 'light'
+      ...(mode === 'dark'
         ? {
           primary: {
             main: '#1976d2',
@@ -27,12 +32,12 @@ function App() {
             main: '#ff4081',
           },
           background: {
-            default: '#f3efee',
-            paper: '#ffffff',
+            default: '#030014 ',
+            paper: '#E8C07C',
           },
           text: {
-            primary: '#000000',
-            secondary: '#424242',
+            primary: '#C9A66B',
+            secondary: '#2B2B2B',
           },
         }
         : {
@@ -43,7 +48,7 @@ function App() {
             main: '#f48fb1',
           },
           background: {
-            default: '#0F141F',
+            default: '#5d0c0c',
             paper: '#172030',
           },
           text: {
@@ -56,12 +61,16 @@ function App() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <NavBar mode={mode} />
+      <CssBaseline />
+      <NavBar />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/characters/:id' element={<Characters />} />
         <Route path='/character/:id/:index' element={<CharacterInfo />} />
-        <Route path='*' />
+        <Route path='/houses' element={<Houses />} />
+        <Route path='/houses/characters/:id/:index' element={<CharactersByHouse />} />
+        <Route path='/spells/:id' element={<Spells />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </ThemeProvider>
   );

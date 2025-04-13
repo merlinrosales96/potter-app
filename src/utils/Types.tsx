@@ -6,7 +6,7 @@ export interface UseCharacterListReturn {
 }
 
 export interface UseCharacterDataReturn {
-    data?: Character;
+    data: Character;
     loading: boolean;
 }
 
@@ -32,4 +32,18 @@ export interface Character {
     hogwartsStudent: boolean;
     hogwartsStaff: boolean;
     image: string;
+}
+
+
+export interface Spell{
+    id: string;
+    name: string;
+    description: string;
+}
+
+export interface UseSpellListReturn {
+    data: Spell[];
+    loading: boolean;
+    error: string | null;
+    responseCount: number;
 }

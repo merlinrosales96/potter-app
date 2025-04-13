@@ -6,17 +6,17 @@ import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import CharacterCard from '../common/CharacterCard';
 import { itemsPerPage } from '../../utils/Utils';
-import { useCharacterList } from '../../hooks/useCharacter';
+import { useCharacterByHouseList } from '../../hooks/useCharacterByHouse';
 import { Character } from '../../utils/Types';
 
-const Characters = () => {
+const CharactersByHouse = () => {
 
-    const { id } = useParams<{ id: string }>();
+    const { id, index } = useParams<{ id: string, index: string }>();
     const navigate = useNavigate();
 
-    const [page, setPage] = useState<number>(id ? parseInt(id) : 1);
+    const [page, setPage] = useState<number>(index ? parseInt(index) : 1);
     const [open, setOpen] = React.useState(false);
-    const { data, loading, responseCount } = useCharacterList(page);
+    const { data, loading, responseCount } = useCharacterByHouseList(page, id ?? '');
 
     useEffect(() => {
 
@@ -24,7 +24,7 @@ const Characters = () => {
 
     const handleChange = (_: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
-        navigate(`/characters/${value}`);
+        navigate(`/houses/characters/${id}/${value}`);
     };
 
     if (loading) {
@@ -67,7 +67,7 @@ const Characters = () => {
                         <Grid container spacing={3}>
                             {data.map((character: Character, index) => (
                                 <Grid size={{ xs: 12, md: 6, lg: 3 }} key={character.id}>
-                                    <Link state={{ isHouse: false }} to={`/character/${character?.id}/${((page - 1) * itemsPerPage) + index + 1}`}>
+                                    <Link state={{ isHouse: true }} to={`/character/${character?.id}/${((page - 1) * itemsPerPage) + index + 1}`}>
                                         <CharacterCard house={character.house} name={character.name} image={character.image} />
                                     </Link>
                                 </Grid>
@@ -86,4 +86,4 @@ const Characters = () => {
     );
 };
 
-export default Characters;
+export default CharactersByHouse;

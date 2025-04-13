@@ -1,61 +1,45 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
     Container, Grid, Box, Paper, Typography, Card, CardMedia,
-    CardContent, Skeleton, Chip, Divider, Pagination, IconButton,
-    LinearProgress,
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow
+    CardContent, Skeleton, Chip, Divider, IconButton,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    CircularProgress
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { typeColors, itemsPerPage } from "../../utils/Utils";
 import { useCharacterById } from "../../hooks/useCharacter";
-import image from '../../assets/images/anonimus.jpg';
-//import axios from "../utils/axios";
+import image from '../../assets/images/anonimus.png';
 
 
 const CharacterInfo = () => {
-
+    const location = useLocation();
     const { id, index } = useParams<{ id: string; index: string }>();
     const navigate = useNavigate();
-    const [page, setPage] = useState<number>(index ? parseInt(index) : 1);
     const { data, loading } = useCharacterById(id ?? "");
-
-    //const [locations, setLocations] = useState<string[]>([]);
-
-    const handleChange = (_: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value);
-        navigate(`/pokemon/${value}`);
-    };
+    const isHouse = location.state?.isHouse;
 
     const goCharacters = () => {
-        navigate(`/characters/${Math.ceil((index ? parseInt(index) : 1) / itemsPerPage)}`);
+        if (!isHouse)
+            navigate(`/characters/${Math.ceil((index ? parseInt(index) : 1) / itemsPerPage)}`);
+        else
+            navigate(`/houses/characters/${data.house}/${Math.ceil((index ? parseInt(index) : 1) / itemsPerPage)}`);
     };
 
     useEffect(() => {
 
     }, []);
 
-    /*useEffect(() => {
-        const fetchLocations = async () => {
-          try {
-            const response = await axios.get(
-              `https://pokeapi.co/api/v2/pokemon/${id}/encounters`
-            );
-            const locationNames = response.data.map((loc: any) => loc.location_area.name);
-            setLocations(locationNames);
-          } catch (error) {
-            console.error("Error fetching locations:", error);
-            setLocations([]);
-          } finally {
-          }
-        };
-    
-        fetchLocations();
-      }, [id]);*/
-
+    if (loading) {
+        return (
+            <Box sx={{ pt: 16, display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
-        <Container maxWidth="md" component="section"
+        <Container maxWidth="sm" component="section" className="text-left"
             sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', my: 4, py: 6 }}>
             <Grid container spacing={6} alignItems="flex-start">
                 <Grid size={{ xs: 12 }}>
@@ -66,72 +50,77 @@ const CharacterInfo = () => {
                 <Grid size={{ xs: 12 }}>
                     <Card sx={{ border: `2px solid ${data ? typeColors[data?.house === "" ? "normal" : data?.house.toLowerCase()] : "normal"}` }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            {loading ? (
-                                <Skeleton variant="rectangular" width={140} height={140} />
-                            ) : (
-                                <CardMedia
-                                    className=''
-                                    component="img"
-                                    sx={{
-                                        width: "40%",
-                                        height: "40%", // Ajusta la altura según tu diseño
-                                        // Cambia a 'contain' si prefieres que la imagen no se recorte
-                                    }}
-                                    image={data?.image === "" ? image : data?.image}
-                                    alt={data?.name}
-                                />
-                            )}
+                            {
+                                loading ? (
+                                    <Skeleton variant="rectangular" width={140} height={140} />
+                                ) : (
+                                    <CardMedia
+                                        className=''
+                                        component="img"
+                                        sx={{
+                                            width: "30%",
+                                            height: "30%",
+                                        }}
+                                        image={data?.image === "" ? image : data?.image}
+                                        alt={data?.name}
+                                    />
+                                )}
                         </Box>
-                        {loading ? (
-                            <Skeleton variant="text" width="60%" />
-                        ) : (
-                            <CardContent>
-                                <Typography className='capitalize-text' variant="h3" color="text.primary">
-                                    {data?.name}
-                                </Typography>
-                                {data?.house !== "" ? <Chip
-                                    label={data?.house}
-                                    sx={{
-                                        backgroundColor: `${typeColors[data?.house.toLowerCase()]}`,
-                                        color: '#FFFFFF',
-                                        fontSize: '24px'
-                                    }}
-                                />
-                                    :
-                                    <></>}
-                                <Grid container spacing={1} alignItems="flex-start">
+                        {
+                            loading ? (
+                                <Skeleton variant="text" width="60%" />
+                            ) : (
+                                <CardContent>
+                                    <Typography className='capitalize-text text-center' variant="h3" color="text.secondary">
+                                        {data.name}
+                                    </Typography>
                                     {
-
+                                        data.house !== "" ? <Chip
+                                            label={data?.house}
+                                            sx={{
+                                                backgroundColor: `${typeColors[data ? data.house.toLowerCase() : "normal"]}`,
+                                                color: '#FFFFFF',
+                                                fontSize: '24px'
+                                            }}
+                                        />
+                                            :
+                                            <></>
                                     }
-                                </Grid>
-                                <Divider sx={{ p: 1 }} />
-                                <Grid container spacing={1} alignItems="flex-start" sx={{ pt: 1 }}>
-                                    <Grid size={{ xs: 4 }}>
-                                        <Typography className='capitalize-text' variant="h4" color="text.primary">
-                                            Hair Color
-                                        </Typography>
-                                    </Grid>
-                                    <Grid size={{ xs: 4 }}>
-                                        <Typography className='capitalize-text' variant="h4" color="text.primary">
-                                            Eyes Color
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid container spacing={1} alignItems="flex-start">
-                                    <Grid size={{ xs: 4 }}>
-                                        <Typography className='capitalize-text' variant="h5" color="text.primary">
-                                            {data ? data.hairColour : ""}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid size={{ xs: 4 }}>
-                                        <Typography className='capitalize-text' variant="h5" color="text.primary">
-                                            {data ? data.eyeColour : ""}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-
-                        )}
+                                    {
+                                        data.hairColour !== "" || data.eyeColour !== ""
+                                            ?
+                                            <Box>
+                                                <Divider sx={{ backgroundColor: '#2B2B2B', mt: 1 }} />
+                                                <Grid container spacing={1} alignItems="flex-start" sx={{ pt: 1 }}>
+                                                    <Grid size={{ xs: 4 }}>
+                                                        <Typography className='capitalize-text' variant="h4" color="text.secondary">
+                                                            Hair Color
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid size={{ xs: 4 }}>
+                                                        <Typography className='capitalize-text' variant="h4" color="text.secondary">
+                                                            Eyes Color
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid container spacing={1} alignItems="flex-start">
+                                                    <Grid size={{ xs: 4 }}>
+                                                        <Typography className='capitalize-text' variant="h5" color="text.secondary">
+                                                            {data.hairColour ? data.hairColour : "No information"}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid size={{ xs: 4 }}>
+                                                        <Typography className='capitalize-text' variant="h5" color="text.secondary">
+                                                            {data.eyeColour ? data.eyeColour : "No information"}
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                            :
+                                            <></>
+                                    }
+                                </CardContent>
+                            )}
                     </Card>
                 </Grid>
 
@@ -140,11 +129,19 @@ const CharacterInfo = () => {
                     data?.wand.core !== "" && data?.wand.wood !== "" && data?.wand.length !== null ?
                         <Grid size={data?.alternate_names.length > 0 ? { xs: 12, md: 6 } : { xs: 12 }}>
                             <Paper elevation={3} sx={{ height: 450 }}>
-                                <Typography sx={{ p: 1 }} className='capitalize-text' variant="h4" color="text.primary">
+                                <Typography sx={{ p: 1 }} className='capitalize-text text-center' variant="h4" color="text.secondary">
                                     Wand
                                 </Typography>
                                 <Box sx={{ padding: 2 }}>
-
+                                    <Typography className='capitalize-text' variant="h5" color="text.secondary">
+                                        {`Wood: ${data?.wand.wood}`}
+                                    </Typography>
+                                    <Typography className='capitalize-text' variant="h5" color="text.secondary">
+                                        {`Core: ${data?.wand.core}`}
+                                    </Typography>
+                                    <Typography className='capitalize-text' variant="h5" color="text.secondary">
+                                        {`Length: ${data?.wand.length}`}
+                                    </Typography>
                                 </Box>
                             </Paper>
                         </Grid>
@@ -156,15 +153,23 @@ const CharacterInfo = () => {
                     data?.alternate_names.length > 0 ?
                         <Grid size={data?.wand.core !== "" && data?.wand.wood !== "" && data?.wand.length !== null ? { xs: 12, md: 6 } : { xs: 12 }}>
                             <Paper elevation={3}>
-                                <Typography sx={{ p: 1 }} className='capitalize-text' variant="h4" color="text.primary">
+                                <Typography sx={{ p: 1 }} className='capitalize-text text-center' variant="h4" color="text.secondary">
                                     Alternate Names
                                 </Typography>
                                 <TableContainer component={Paper} sx={{ height: 400, padding: 2 }}>
                                     <Table aria-label="simple table">
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell>#</TableCell>
-                                                <TableCell>Names</TableCell>
+                                                <TableCell>
+                                                    <Typography variant="h6" color="text.secondary">
+                                                        #
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography variant="h6" color="text.secondary">
+                                                        Names
+                                                    </Typography>
+                                                </TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -174,10 +179,14 @@ const CharacterInfo = () => {
                                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                 >
                                                     <TableCell component="th" scope="row">
-                                                        {index + 1}
+                                                        <Typography variant="h6" color="text.secondary">
+                                                            {index + 1}
+                                                        </Typography>
                                                     </TableCell>
                                                     <TableCell component="th" scope="row" className='capitalize-text'>
-                                                        {row}
+                                                        <Typography variant="h6" color="text.secondary">
+                                                            {row}
+                                                        </Typography>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
