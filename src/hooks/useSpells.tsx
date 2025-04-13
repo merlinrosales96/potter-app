@@ -8,7 +8,7 @@ export const useSpellList = (page: number): UseSpellListReturn => {
     const [data, setData] = useState<Spell[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [responseCount, setResponseCount] = useState<number>();
+    const [responseCount, setResponseCount] = useState<number>(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,7 +16,7 @@ export const useSpellList = (page: number): UseSpellListReturn => {
             setError(null);
 
             try {
-                const response = await axios.get<{ count: number; results: Spell[] }>(
+                const response = await axios.get<Spell[]>(
                     `/spells`
                 );
                 

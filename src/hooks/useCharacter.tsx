@@ -8,7 +8,7 @@ export const useCharacterList = (page: number): UseCharacterListReturn => {
     const [data, setData] = useState<Character[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [responseCount, setResponseCount] = useState<number>();
+    const [responseCount, setResponseCount] = useState<number>(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,10 +16,9 @@ export const useCharacterList = (page: number): UseCharacterListReturn => {
             setError(null);
 
             try {
-                const response = await axios.get<{ count: number; results: Character[] }>(
+                const response = await axios.get<Character[]>(
                     `/characters`
                 );
-                
                 setData(response.data.slice((page - 1) * itemsPerPage, page * itemsPerPage));
                 setResponseCount(response.data.length);
 
@@ -41,7 +40,7 @@ export const useCharacterList = (page: number): UseCharacterListReturn => {
 
 
 export const useCharacterById = (id: string): UseCharacterDataReturn => {
-    const [data, setData] = useState<Character>();
+    const [data, setData] = useState<Character>({} as Character);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {

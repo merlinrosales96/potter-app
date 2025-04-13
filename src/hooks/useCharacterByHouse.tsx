@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Character, UseCharacterListReturn, UseCharacterDataReturn } from "../utils/Types";
+import { Character, UseCharacterListReturn } from "../utils/Types";
 import { itemsPerPage } from "../utils/Utils";
 import axios from "../utils/axios";
 
@@ -8,7 +8,7 @@ export const useCharacterByHouseList = (page: number, id: string): UseCharacterL
     const [data, setData] = useState<Character[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [responseCount, setResponseCount] = useState<number>();
+    const [responseCount, setResponseCount] = useState<number>(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,7 +16,7 @@ export const useCharacterByHouseList = (page: number, id: string): UseCharacterL
             setError(null);
 
             try {
-                const response = await axios.get<{ count: number; results: Character[] }>(
+                const response = await axios.get<Character[]>(
                     `/characters/house/${id}`
                 );
                 
