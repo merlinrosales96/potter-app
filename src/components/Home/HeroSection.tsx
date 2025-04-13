@@ -4,7 +4,6 @@ import hogwarts from '../../assets/images/home.jpg';
 export default function HomeSection() {
     return (
         <Box
-            component='body'
             sx={{
                 height: '100vh',
                 width: '100%',
