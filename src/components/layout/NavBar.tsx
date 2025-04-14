@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, AppBar, Toolbar, Container, Avatar, IconButton, Drawer, Divider, MenuItem, Typography } from '@mui/material';
-import { Menu } from '@mui/icons-material';
-import logo from '../../assets/LOGO.png';
+import { Menu, Close } from '@mui/icons-material';
+import logo from '../../assets/images/LOGO.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { NavButtons } from '../../utils/data/layout/layout';
 
@@ -91,7 +91,11 @@ function NavBar() {
                             >
                                 <Menu />
                             </IconButton>
-                            <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+                            <Drawer
+                                anchor="right"
+                                open={open}
+                                onClose={toggleDrawer(false)}
+                                variant="temporary">
                                 <Box
                                     sx={{
                                         minWidth: '60dvw',
@@ -100,13 +104,30 @@ function NavBar() {
                                         flexGrow: 1,
                                     }}
                                 >
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'end',
+                                            flexGrow: 1,
+                                        }}
+                                    >
+                                        <Box component="div" className="grid grid-cols-2">
+                                            <IconButton
+                                                aria-label="close"
+                                                onClick={toggleDrawer(false)}
+                                            >
+                                                <Close />
+                                            </IconButton>
+                                        </Box>
+                                    </Box>
                                     {
                                         NavButtons.map((item, index) => (
-                                            <Link to={item.path}>
+                                            <Link to={item.path} onClick={toggleDrawer(false)}>
                                                 <MenuItem
                                                     key={index}
                                                 >
-                                                    <Typography variant='h5' color='text.secondary'>
+                                                    <Typography variant='h6' color='text.secondary'>
                                                         {item.name}
                                                     </Typography>
                                                 </MenuItem>
@@ -114,6 +135,7 @@ function NavBar() {
                                         ))
                                     }
                                     <Divider />
+                                    <Typography className='p-2' variant='body1' color='text.secondary'>Powered by <a href="https://merlinrosales.netlify.app/" target="_blank" className="color-green" rel="noreferrer">Merlín Rosales</a></Typography>
                                 </Box>
                             </Drawer>
 

@@ -4,7 +4,6 @@ import hogwarts from '../../assets/images/home.jpg';
 export default function HomeSection() {
     return (
         <Box
-            component='body'
             sx={{
                 height: '100vh',
                 width: '100%',
@@ -48,8 +47,7 @@ export default function HomeSection() {
                     lineHeight: 1.6,
                 }}
             >
-                A place where portraits whisper, staircases move, and magic lives in every stone.
-                The Sorting Hat awaits to decide your house. Will it be Gryffindor, Ravenclaw, Hufflepuff, or Slytherin?
+                Discover the iconic characters and magical spells from the Wizarding World. Explore the heroes, villains, and magic that make this universe unforgettable
             </Typography>
 
             <Typography
