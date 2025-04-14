@@ -39,8 +39,8 @@ const CharacterInfo = () => {
     }
 
     return (
-        <Box component="section" id="character" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', px: 6 }}>
-            <Container maxWidth="sm" component="main" className="text-left"
+        <Box component="section" id="character" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Container maxWidth="md" component="main" className="text-left"
                 sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', my: 8, py: 6 }}>
                 <Grid container spacing={6} alignItems="flex-start">
                     <Grid size={{ xs: 12 }}>
@@ -59,8 +59,8 @@ const CharacterInfo = () => {
                                             className=''
                                             component="img"
                                             sx={{
-                                                width: "30%",
-                                                height: "30%",
+                                                width: "35%",
+                                                height: "35%",
                                             }}
                                             image={data?.image === "" ? image : data?.image}
                                             alt={data?.name}
@@ -129,7 +129,7 @@ const CharacterInfo = () => {
                     {
                         data?.wand.core !== "" && data?.wand.wood !== "" && data?.wand.length !== null ?
                             <Grid size={data?.alternate_names.length > 0 ? { xs: 12, md: 6 } : { xs: 12 }}>
-                                <Paper elevation={3} sx={{ height: 450 }}>
+                                <Paper elevation={3}>
                                     <Typography sx={{ p: 1 }} className='capitalize-text text-center' variant="h4" color="text.secondary">
                                         Wand
                                     </Typography>
