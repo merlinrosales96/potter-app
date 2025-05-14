@@ -112,9 +112,10 @@ function NavBar() {
                                             flexGrow: 1,
                                         }}
                                     >
-                                        <Box component="div" className="grid grid-cols-2">
+                                        <Box component="div" className="grid grid-cols-1">
                                             <IconButton
                                                 aria-label="close"
+
                                                 onClick={toggleDrawer(false)}
                                             >
                                                 <Close />
@@ -134,7 +135,7 @@ function NavBar() {
                                             </Link>
                                         ))
                                     }
-                                    <Divider />
+                                    <Divider sx={{ bgcolor: "#2B2B2B" }} />
                                     <Typography className='p-2' variant='body1' color='text.secondary'>Powered by <a href="https://merlinrosales.netlify.app/" target="_blank" className="color-green" rel="noreferrer">Merlín Rosales</a></Typography>
                                 </Box>
                             </Drawer>
