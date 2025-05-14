@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Grid, Card, CardContent, CardActionArea, Typography, Pagination, Box, Container, Skeleton, CircularProgress, Modal, Divider } from '@mui/material';
+import { Grid, Card, CardContent, CardActionArea, Typography, Pagination, Box, Container, Skeleton, CircularProgress, Modal, Divider, IconButton } from '@mui/material';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { typeColors, itemsPerPage } from '../../utils/Utils';
 import { useSpellList } from '../../hooks/useSpells';
 import { Spell } from '../../utils/Types';
+import { Close } from '@mui/icons-material';
 
 const modalStyle = {
     position: 'absolute' as const,
@@ -63,7 +64,9 @@ const Spells = () => {
         setDescription(desc);
     }
 
-    const handleCloseModal = () => {
+    const handleCloseModal = (_: object, reason: string) => {
+        // Evitar el cierre si el motivo es "backdropClick" o "escapeKeyDown"
+        if (reason === 'backdropClick' || reason === 'escapeKeyDown') return;
         setOpenModal(false);
     }
 
@@ -117,6 +120,17 @@ const Spells = () => {
                                 <Typography variant="h4" color='text.secondary' component="h2">
                                     Description
                                 </Typography>
+                                <IconButton
+                                    aria-label="close"
+                                    onClick={() => setOpenModal(false)}
+                                    sx={() => ({
+                                        position: 'absolute',
+                                        right: 8,
+                                        top: 8,
+                                    })}
+                                >
+                                    <Close />
+                                </IconButton>
                                 <Divider sx={{ backgroundColor: '#2B2B2B' }} />
                                 <Typography variant="h5" color='text.secondary' sx={{ mt: 2 }}>
                                     {description}

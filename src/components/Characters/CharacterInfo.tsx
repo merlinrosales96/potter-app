@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
     Container, Grid, Box, Paper, Typography, Card, CardMedia,
-    CardContent, Skeleton, Chip, Divider, IconButton,
+    CardContent, Skeleton, Chip, IconButton,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    CircularProgress
+    CircularProgress, Stack, List, ListItem, ListItemAvatar, ListItemText, Avatar
 } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
+import { ArrowBack, AutoFixHigh } from "@mui/icons-material";
 import { typeColors, itemsPerPage } from "../../utils/Utils";
 import { useCharacterById } from "../../hooks/useCharacter";
 import image from '../../assets/images/anonimus.png';
@@ -40,7 +40,7 @@ const CharacterInfo = () => {
 
     return (
         <Box component="section" id="character" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Container maxWidth="md" component="main" className="text-left"
+            <Container maxWidth="sm" component="main" className="text-left"
                 sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', my: 8, py: 6 }}>
                 <Grid container spacing={6} alignItems="flex-start">
                     <Grid size={{ xs: 12 }}>
@@ -49,23 +49,23 @@ const CharacterInfo = () => {
                         </IconButton>
                     </Grid>
                     <Grid size={{ xs: 12 }}>
-                        <Card sx={{ border: `2px solid ${data ? typeColors[data?.house === "" ? "normal" : data?.house.toLowerCase()] : "normal"}` }}>
+                        <Card sx={{ border: `3px solid ${data ? typeColors[data?.house === "" ? "normal" : data?.house.toLowerCase()] : "normal"}` }}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                {
-                                    loading ? (
-                                        <Skeleton variant="rectangular" width={140} height={140} />
-                                    ) : (
-                                        <CardMedia
-                                            className=''
-                                            component="img"
-                                            sx={{
-                                                width: "35%",
-                                                height: "35%",
-                                            }}
-                                            image={data?.image === "" ? image : data?.image}
-                                            alt={data?.name}
-                                        />
-                                    )}
+                                <CardMedia
+                                    className=''
+                                    component="img"
+                                    sx={{
+                                        width: {
+                                            xs: "90%",
+                                        },
+                                        height: {
+                                            xs: "250px",
+                                        },
+                                        objectFit: "contain",
+                                    }}
+                                    image={data?.image === "" ? image : data?.image}
+                                    alt={data.name}
+                                />
                             </Box>
                             {
                                 loading ? (
@@ -88,37 +88,29 @@ const CharacterInfo = () => {
                                                 <></>
                                         }
                                         {
-                                            data.hairColour !== "" || data.eyeColour !== ""
-                                                ?
-                                                <Box>
-                                                    <Divider sx={{ backgroundColor: '#2B2B2B', mt: 1 }} />
-                                                    <Grid container spacing={1} alignItems="flex-start" sx={{ pt: 1 }}>
-                                                        <Grid size={{ xs: 4 }}>
-                                                            <Typography className='capitalize-text' variant="h4" color="text.secondary">
-                                                                Hair Color
-                                                            </Typography>
-                                                        </Grid>
-                                                        <Grid size={{ xs: 4 }}>
-                                                            <Typography className='capitalize-text' variant="h4" color="text.secondary">
-                                                                Eyes Color
-                                                            </Typography>
-                                                        </Grid>
-                                                    </Grid>
-                                                    <Grid container spacing={1} alignItems="flex-start">
-                                                        <Grid size={{ xs: 4 }}>
-                                                            <Typography className='capitalize-text' variant="h5" color="text.secondary">
-                                                                {data.hairColour ? data.hairColour : "No information"}
-                                                            </Typography>
-                                                        </Grid>
-                                                        <Grid size={{ xs: 4 }}>
-                                                            <Typography className='capitalize-text' variant="h5" color="text.secondary">
-                                                                {data.eyeColour ? data.eyeColour : "No information"}
-                                                            </Typography>
-                                                        </Grid>
-                                                    </Grid>
-                                                </Box>
-                                                :
-                                                <></>
+                                            <Stack
+                                                direction="row"
+                                                spacing={3}
+                                                sx={{
+                                                    justifyContent: "flex-start",
+                                                    alignItems: "flex-start",
+                                                }}
+                                            >
+                                                {
+                                                    data.hairColour !== "" ?
+                                                        <Typography sx={{ whiteSpace: 'pre-line' }} className='capitalize-text' variant="h4" color="text.secondary">
+                                                            {`Hair Color: \n ${data.hairColour}`}
+                                                        </Typography>
+                                                        : <></>
+                                                }
+                                                {
+                                                    data.eyeColour !== "" ?
+                                                        <Typography sx={{ whiteSpace: 'pre-line' }} className='capitalize-text' variant="h4" color="text.secondary">
+                                                            {`Eyes Color: \n ${data.eyeColour}`}
+                                                        </Typography>
+                                                        : <></>
+                                                }
+                                            </Stack>
                                         }
                                     </CardContent>
                                 )}
@@ -130,20 +122,18 @@ const CharacterInfo = () => {
                         data?.wand.core !== "" && data?.wand.wood !== "" && data?.wand.length !== null ?
                             <Grid size={data?.alternate_names.length > 0 ? { xs: 12, md: 6 } : { xs: 12 }}>
                                 <Paper elevation={3}>
-                                    <Typography sx={{ p: 1 }} className='capitalize-text text-center' variant="h4" color="text.secondary">
-                                        Wand
-                                    </Typography>
-                                    <Box sx={{ padding: 2 }}>
-                                        <Typography className='capitalize-text' variant="h5" color="text.secondary">
-                                            {`Wood: ${data?.wand.wood}`}
-                                        </Typography>
-                                        <Typography className='capitalize-text' variant="h5" color="text.secondary">
-                                            {`Core: ${data?.wand.core}`}
-                                        </Typography>
-                                        <Typography className='capitalize-text' variant="h5" color="text.secondary">
-                                            {`Length: ${data?.wand.length}`}
-                                        </Typography>
-                                    </Box>
+                                    <List sx={{ width: '100%', maxWidth: 360 }}>
+                                        <ListItem>
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: 'background.default', color: '#FFFFFF' }}>
+                                                    <AutoFixHigh />
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText sx={{ whiteSpace: 'pre-line' }} primary={<Typography sx={{ whiteSpace: 'pre-line' }} className='capitalize-text' variant="h4" color="text.secondary">
+                                                Wand
+                                            </Typography>} secondary={<Typography sx={{ whiteSpace: 'pre-line' }} className='capitalize-text' variant="h6" color="text.secondary">{`Wood: ${data.wand.wood} \n Core: ${data.wand.core} \n Length: ${data.wand.length} cm.`}</Typography>} />
+                                        </ListItem>
+                                    </List>
                                 </Paper>
                             </Grid>
                             :

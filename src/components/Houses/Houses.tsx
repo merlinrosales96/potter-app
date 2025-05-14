@@ -18,7 +18,7 @@ const Houses = () => {
                                 houses.map((item, index) => (
                                     <Grid size={{ xs: 12, md: 6, lg: 3 }} key={index}>
                                         <Link to={`/houses/characters/${item.name}/1`}>
-                                            <Card sx={{ border: `2px solid ${typeColors[item.name]}` }}>
+                                            <Card sx={{ border: `3px solid ${typeColors[item.name]}` }}>
                                                 <CardActionArea sx={{ height: '400px' }}>
                                                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                                         <CardMedia

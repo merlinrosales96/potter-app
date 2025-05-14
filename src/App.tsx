@@ -1,8 +1,4 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { PaletteMode } from '@mui/material';
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import NavBar from './components/layout/NavBar';
 import Home from './pages/Home';
 import Characters from './components/Characters/Characters';
@@ -12,56 +8,12 @@ import CharactersByHouse from './components/Houses/CharactersByHouse';
 import Spells from './components/Spells/Spells';
 import NotFound from './components/404/404';
 import './App.css';
+import { ThemeProviderWrapper } from './theme/ThemeProvider';
 
 function App() {
 
-  const [mode] = React.useState<PaletteMode>('dark');
-
-  const defaultTheme = createTheme({
-    typography: {
-      fontFamily: 'HarryP, Arial',
-    },
-    palette: {
-      mode,
-      ...(mode === 'dark'
-        ? {
-          primary: {
-            main: '#1976d2',
-          },
-          secondary: {
-            main: '#ff4081',
-          },
-          background: {
-            default: '#030014 ',
-            paper: '#E8C07C',
-          },
-          text: {
-            primary: '#C9A66B',
-            secondary: '#2B2B2B',
-          },
-        }
-        : {
-          primary: {
-            main: '#90caf9',
-          },
-          secondary: {
-            main: '#f48fb1',
-          },
-          background: {
-            default: '#5d0c0c',
-            paper: '#172030',
-          },
-          text: {
-            primary: '#ffffff',
-            secondary: '#b0bec5',
-          },
-        }),
-    },
-  });
-
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <CssBaseline />
+    <ThemeProviderWrapper>
       <NavBar />
       <Routes>
         <Route path='/' element={<Home />} />
@@ -72,7 +24,7 @@ function App() {
         <Route path='/spells/:id' element={<Spells />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
-    </ThemeProvider>
+    </ThemeProviderWrapper>
   );
 }
 
