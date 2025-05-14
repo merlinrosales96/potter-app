@@ -10,7 +10,7 @@ type CharacterCardProps = {
 
 const CharacterCard = ({ house, image, name }: CharacterCardProps) => {
     return (
-        <Card sx={{ border: `2px solid ${typeColors[house === "" ? "normal" : house.toLowerCase()]}` }}>
+        <Card sx={{ border: `3px solid ${typeColors[house === "" ? "normal" : house.toLowerCase()]}` }}>
             <CardActionArea sx={{ height: '400px' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <CardMedia
