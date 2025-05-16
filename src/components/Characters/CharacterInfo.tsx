@@ -4,7 +4,8 @@ import {
     Container, Grid, Box, Paper, Typography, Card, CardMedia,
     CardContent, Skeleton, Chip, IconButton,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    CircularProgress, Stack, List, ListItem, ListItemAvatar, ListItemText, Avatar
+    CircularProgress, Stack, List, ListItem, ListItemAvatar, ListItemText, Avatar,
+    Divider
 } from "@mui/material";
 import { ArrowBack, AutoFixHigh } from "@mui/icons-material";
 import { typeColors, itemsPerPage } from "../../utils/Utils";
@@ -87,6 +88,7 @@ const CharacterInfo = () => {
                                                 :
                                                 <></>
                                         }
+                                        <Divider sx={{ backgroundColor: '#2B2B2B', mt: 2, mb: 2 }} />
                                         {
                                             <Stack
                                                 direction="row"
