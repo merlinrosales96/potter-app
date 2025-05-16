@@ -1,4 +1,4 @@
-import HomeSection from "../components/home/HeroSection"
+import HomeSection from "../components/Home/HomeSection";
 
 const Home = () => {
     return (
