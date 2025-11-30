@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Grid, Typography, Pagination, Box, Container, CircularProgress } from '@mui/material';
@@ -15,7 +15,7 @@ const Characters = () => {
     const navigate = useNavigate();
 
     const [page, setPage] = useState<number>(id ? parseInt(id) : 1);
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const { data, loading, responseCount } = useCharacterList(page);
 
     useEffect(() => {

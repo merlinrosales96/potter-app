@@ -1,9 +1,9 @@
-import React from "react";
+import { FC } from "react";
 import { Box, Typography, Button, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import logo from '../../assets/images/404.png';
+import logo from '../../assets/images/404.webp';
 
-const NotFound: React.FC = () => {
+const NotFound: FC = () => {
   const navigate = useNavigate();
 
   const handleGoHome = () => {

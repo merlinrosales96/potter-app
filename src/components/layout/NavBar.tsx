@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, AppBar, Toolbar, Container, Avatar, IconButton, Drawer, Divider, MenuItem, Typography } from '@mui/material';
 import { Menu, Close } from '@mui/icons-material';
-import logo from '../../assets/images/LOGO.png';
+import logo from '../../assets/images/LOGO.webp';
 import { Link, useNavigate } from 'react-router-dom';
 import { NavButtons } from '../../utils/data/layout/layout';
 
