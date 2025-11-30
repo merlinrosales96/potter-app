@@ -10,7 +10,7 @@ import {
 import { ArrowBack, AutoFixHigh } from "@mui/icons-material";
 import { typeColors, itemsPerPage } from "../../utils/Utils";
 import { useCharacterById } from "../../hooks/useCharacter";
-import image from '../../assets/images/anonimus.png';
+import image from '../../assets/images/anonimus.webp';
 
 
 const CharacterInfo = () => {

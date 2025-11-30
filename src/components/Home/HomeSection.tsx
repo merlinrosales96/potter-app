@@ -1,5 +1,5 @@
 import { Typography, Button, Box } from "@mui/material";
-import hogwarts from '../../assets/images/banner.png';
+import hogwarts from '../../assets/images/banner.webp';
 
 export default function HomeSection() {
     return (

@@ -1,6 +1,6 @@
 import { Box, Card, CardActionArea, CardMedia, CardContent, Typography, Chip } from "@mui/material";
 import { typeColors } from "../../utils/Utils";
-import image2 from '../../assets/images/anonimus.png'
+import image2 from '../../assets/images/anonimus.webp'
 
 type CharacterCardProps = {
     house: string;
