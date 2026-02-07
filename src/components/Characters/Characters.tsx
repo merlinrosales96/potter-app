@@ -1,89 +1,131 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { Grid, Typography, Pagination, Box, Container, CircularProgress } from '@mui/material';
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import { useMemo } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import {
+  Grid,
+  Typography,
+  Pagination,
+  Box,
+  Container,
+  Skeleton,
+  Fade
+} from '@mui/material';
 import CharacterCard from '../common/CharacterCard';
 import { itemsPerPage } from '../../utils/Utils';
 import { useCharacterList } from '../../hooks/useCharacter';
 import { Character } from '../../utils/Types';
 
 const Characters = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
-    const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
+  const page = useMemo(() => (id ? parseInt(id, 10) : 1), [id]);
 
-    const [page, setPage] = useState<number>(id ? parseInt(id) : 1);
-    const [open, setOpen] = useState(false);
-    const { data, loading, responseCount } = useCharacterList(page);
+  const { data = [], loading, responseCount = 0 } = useCharacterList(page);
 
-    useEffect(() => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
+    navigate(`/characters/${value}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-    }, []);
+  const totalPages = Math.ceil(responseCount / itemsPerPage);
 
-    const handleChange = (_: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value);
-        navigate(`/characters/${value}`);
-    };
+  // Renderizamos Skeletons mientras carga
+  const renderSkeletons = () => (
+    <Grid container spacing={4}>
+      {[...Array(itemsPerPage)].map((_, index) => (
+        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={`skeleton-${index}`}>
+          <Skeleton
+            variant="rectangular"
+            height={400}
+            sx={{ borderRadius: 4, bgcolor: 'rgba(201, 166, 107, 0.1)' }}
+          />
+          <Skeleton variant="text" sx={{ mt: 1, fontSize: '2rem', width: '80%' }} />
+          <Skeleton variant="text" sx={{ width: '40%' }} />
+        </Grid>
+      ))}
+    </Grid>
+  );
 
-    if (loading) {
-        return (
-            <Box sx={{ pt: 16, display: 'flex', justifyContent: 'center' }}>
-                <CircularProgress />
+  return (
+    <Container
+      component="main"
+      maxWidth="lg"
+      sx={{
+        py: 8,
+        // Añade esta línea:
+        mt: { xs: 10, md: 14 }
+      }}
+    >
+      <Typography
+        variant="h2"
+        align="center"
+        sx={{
+          fontWeight: 900,
+          mb: 6,
+          color: 'primary.main',
+          textShadow: '0 0 20px rgba(201, 166, 107, 0.3)'
+        }}
+      >
+        Characters
+      </Typography>
+
+      {loading ? (
+        renderSkeletons()
+      ) : (
+        <Fade in timeout={800}>
+          <Box>
+            <Grid container spacing={4}>
+              {data.map((character: Character, index: number) => (
+                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={character.id}>
+                  <Link
+                    to={`/character/${character.id}/${((page - 1) * itemsPerPage) + index + 1}`}
+                    state={{ isHouse: false }}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <CharacterCard
+                      house={character.house}
+                      name={character.name}
+                      image={character.image}
+                    />
+                  </Link>
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Paginación */}
+            <Box sx={{ mt: 10, display: 'flex', justifyContent: 'center' }}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+                size="large"
+                shape="rounded"
+                showFirstButton
+                showLastButton
+                sx={{
+                  '& .MuiPaginationItem-root': {
+                    color: 'primary.main',
+                    borderColor: 'rgba(201, 166, 107, 0.5)',
+                    fontSize: '1.1rem'
+                  }
+                }}
+              />
             </Box>
-        );
-    }
+          </Box>
+        </Fade>
+      )}
 
-    const handleClose = (
-        _?: React.SyntheticEvent | Event,
-        reason?: SnackbarCloseReason,
-    ) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    return (
-        <Box component="section" id="characters" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', px: 6 }}>
-            <Container component="main" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pb: 16, gap: 3 }}>
-                <Box component="div">
-                    <Box component="div" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                            <Alert
-                                onClose={handleClose}
-                                severity="error"
-                                variant="filled"
-                                sx={{ width: '100%' }}
-                            >
-                                Character not found
-                            </Alert>
-                        </Snackbar>
-                        <Typography variant="h1" sx={{ pt: 12, pb: 8 }}>
-                            Characters
-                        </Typography>
-                        <Grid container spacing={3}>
-                            {data.map((character: Character, index) => (
-                                <Grid size={{ xs: 12, md: 6, lg: 3 }} key={character.id}>
-                                    <Link state={{ isHouse: false }} to={`/character/${character?.id}/${((page - 1) * itemsPerPage) + index + 1}`}>
-                                        <CharacterCard house={character.house} name={character.name} image={character.image} />
-                                    </Link>
-                                </Grid>
-                            ))}
-                        </Grid>
-                        <Pagination
-                            count={Math.ceil(responseCount / itemsPerPage)}
-                            page={page}
-                            onChange={handleChange}
-                            sx={{ marginTop: 2 }}
-                        />
-                    </Box>
-                </Box>
-            </Container>
+      {/* Manejo de estado vacío */}
+      {!loading && data.length === 0 && (
+        <Box sx={{ textAlign: 'center', py: 10 }}>
+          <Typography variant="h5" color="text.secondary">
+            No wizards found in this parchment...
+          </Typography>
         </Box>
-    );
+      )}
+    </Container>
+  );
 };
 
 export default Characters;

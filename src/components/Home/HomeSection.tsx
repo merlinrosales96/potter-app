@@ -62,26 +62,43 @@ export default function HomeSection() {
             </Typography>
 
             <Button
-                href={`/characters/1`}
+                href="/characters/1"
+                variant="outlined"
                 sx={{
-                    mt: 3,
-                    px: 5,
-                    py: 1.8,
-                    border: '2px solid #C9A66B',
+                    mt: 5,
+                    px: 8,
+                    py: 2,
+                    borderColor: '#C9A66B',
                     color: '#C9A66B',
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                    letterSpacing: '1px',
-                    boxShadow: '0 0 15px rgba(201, 166, 107, 0.5)',
-                    transition: 'all 0.3s ease-in-out',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    borderRadius: '2px', // Aspecto de "marco"
+                    letterSpacing: 2,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(120deg, transparent, rgba(201, 166, 107, 0.2), transparent)',
+                        transition: 'all 0.6s'
+                    },
                     '&:hover': {
-                        backgroundColor: '#C9A66B',
-                        color: '#121212',
-                        boxShadow: '0 0 35px rgba(201, 166, 107, 0.8)',
+                        borderColor: '#E8C07C',
+                        bgcolor: 'rgba(201, 166, 107, 0.05)',
+                        boxShadow: '0 0 30px rgba(201, 166, 107, 0.3)',
+                        transform: 'translateY(-5px)',
+                        '&::before': {
+                            left: '100%'
+                        }
                     },
                 }}
             >
-                Enter the Magic World
+                ENTER THE MAGIC WORLD
             </Button>
         </Box>
     )
