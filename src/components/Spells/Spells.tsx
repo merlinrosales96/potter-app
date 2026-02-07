@@ -1,147 +1,244 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Grid, Card, CardContent, CardActionArea, Typography, Pagination, Box, Container, Skeleton, CircularProgress, Modal, Divider, IconButton } from '@mui/material';
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import { typeColors, itemsPerPage } from '../../utils/Utils';
+import {
+  Grid, 
+  Typography, Pagination, Box, Container,
+  Card, CardContent, CardActionArea,
+  Dialog, DialogTitle, DialogContent, IconButton, Fade,
+  Snackbar, Alert, Skeleton, Stack, useTheme
+} from '@mui/material';
+import { Close as CloseIcon, AutoFixHigh } from '@mui/icons-material';
+import { itemsPerPage } from '../../utils/Utils';
 import { useSpellList } from '../../hooks/useSpells';
 import { Spell } from '../../utils/Types';
-import { Close } from '@mui/icons-material';
-
-const modalStyle = {
-    position: 'absolute' as const,
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    borderRadius: 2,
-    boxShadow: 24,
-    p: 4,
-};
 
 const Spells = () => {
+  const theme = useTheme();
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
-    const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
+  const page = useMemo(() => (id ? parseInt(id, 10) : 1), [id]);
+  const { data = [], loading, responseCount = 0 } = useSpellList(page);
 
-    const [page, setPage] = useState<number>(id ? parseInt(id) : 1);
-    const [open, setOpen] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
-    const { data, loading, responseCount } = useSpellList(page);
-    const [description, setDescription] = useState('');
+  const [selectedSpell, setSelectedSpell] = useState<Spell | null>(null);
+  const [errorOpen, setErrorOpen] = useState(false);
 
-    useEffect(() => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
+    navigate(`/spells/${value}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-    }, []);
+  const totalPages = Math.ceil(responseCount / itemsPerPage);
 
-    const handleChange = (_: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value);
-        navigate(`/spells/${value}`);
-    };
+  // Estilo común para los Skeletons mágicos
+  const skeletonMagicSx = {
+    bgcolor: 'rgba(201, 166, 107, 0.08)',
+    borderRadius: 4
+  };
 
-    if (loading) {
-        return (
-            <Box sx={{ pt: 16, display: 'flex', justifyContent: 'center' }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
+  return (
+    <Container
+      component="main"
+      maxWidth="lg"
+      sx={{
+        py: 8,
+        mt: { xs: 10, md: 14 },
+        minHeight: '100vh'
+      }}
+    >
+      <Snackbar open={errorOpen} autoHideDuration={5000} onClose={() => setErrorOpen(false)}>
+        <Alert severity="error" variant="filled" sx={{ width: '100%' }}>
+          Spell not found
+        </Alert>
+      </Snackbar>
 
-    const handleClose = (
-        _?: React.SyntheticEvent | Event,
-        reason?: SnackbarCloseReason,
-    ) => {
-        if (reason === 'clickaway') {
-            return;
-        }
+      <Box sx={{ textAlign: 'center', mb: 8 }}>
+        <Typography 
+          variant="h2" 
+          sx={{ 
+            fontWeight: 900, 
+            letterSpacing: '-1px',
+            textShadow: '0 0 20px rgba(201, 166, 107, 0.3)' 
+          }}
+        >
+          Magic Spells
+        </Typography>
+        <Typography variant="h6" color="text.secondary" sx={{ fontStyle: 'italic', opacity: 0.8 }}>
+          "The wand chooses the wizard... but the wizard masters the spell"
+        </Typography>
+      </Box>
 
-        setOpen(false);
-    };
-
-    const handleOpenModal = (desc: string) => {
-        setOpenModal(true);
-        setDescription(desc);
-    }
-
-    const handleCloseModal = (_: object, reason: string) => {
-        // Evitar el cierre si el motivo es "backdropClick" o "escapeKeyDown"
-        if (reason === 'backdropClick' || reason === 'escapeKeyDown') return;
-        setOpenModal(false);
-    }
-
-    return (
-        <Box component="section" id="projects" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', px: 6 }}>
-            <Container component="main" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pb: 16, gap: 3 }}>
-                <Box component="div">
-                    <Box component="div" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                            <Alert
-                                onClose={handleClose}
-                                severity="error"
-                                variant="filled"
-                                sx={{ width: '100%' }}
-                            >
-                                Spell not found
-                            </Alert>
-                        </Snackbar>
-                        <Typography variant="h1" sx={{ pt: 12, pb: 8 }}>
-                            Spells
-                        </Typography>
-                        <Grid container spacing={3}>
-                            {data.map((spell: Spell) => (
-                                <Grid size={{ xs: 12, md: 6, lg: 3 }} key={spell.id}>
-                                    <Card sx={{ border: `2px solid ${typeColors["normal"]}` }}>
-                                        <CardActionArea sx={{ height: '200px' }} onClick={() => handleOpenModal(spell.description)}>
-                                            {
-                                                loading ? (
-                                                    <Skeleton variant="text" width="60%" />
-                                                ) : (
-                                                    <CardContent>
-                                                        <Typography className='capitalize-text' variant="h4" color="text.secondary" display="block" gutterBottom>
-                                                            {spell.name}
-                                                        </Typography>
-                                                    </CardContent>
-
-                                                )}
-                                        </CardActionArea>
-                                    </Card>
-                                </Grid>
-                            ))}
-                        </Grid>
-                        <Pagination
-                            count={Math.ceil(responseCount / itemsPerPage)}
-                            page={page}
-                            onChange={handleChange}
-                            sx={{ marginTop: 2 }}
-                        />
-                        <Modal open={openModal} onClose={handleCloseModal}>
-                            <Box sx={modalStyle}>
-                                <Typography variant="h4" color='text.secondary' component="h2">
-                                    Description
-                                </Typography>
-                                <IconButton
-                                    aria-label="close"
-                                    onClick={() => setOpenModal(false)}
-                                    sx={() => ({
-                                        position: 'absolute',
-                                        right: 8,
-                                        top: 8,
-                                    })}
-                                >
-                                    <Close />
-                                </IconButton>
-                                <Divider sx={{ backgroundColor: '#2B2B2B' }} />
-                                <Typography variant="h5" color='text.secondary' sx={{ mt: 2 }}>
-                                    {description}
-                                </Typography>
-                            </Box>
-                        </Modal>
-                    </Box>
+      <Grid container spacing={3}>
+        {loading
+          ? Array.from(new Array(itemsPerPage)).map((_, index) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={`spell-skeleton-${index}`}>
+              <Card sx={{ ...skeletonMagicSx, height: '160px', border: '1px solid rgba(201, 166, 107, 0.1)' }}>
+                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+                  <Stack spacing={2} alignItems="center" sx={{ width: '100%' }}>
+                    <Skeleton variant="circular" width={45} height={45} animation="wave" sx={{ bgcolor: 'rgba(201, 166, 107, 0.15)' }} />
+                    <Skeleton variant="text" width="70%" height={30} animation="wave" sx={{ bgcolor: 'rgba(201, 166, 107, 0.15)' }} />
+                  </Stack>
                 </Box>
-            </Container>
+              </Card>
+            </Grid>
+          ))
+          : data.map((spell: Spell, index: number) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={spell.id}>
+              <Fade in timeout={300 + index * 100}>
+                <Card
+                  sx={{
+                    height: '100%',
+                    borderRadius: 5,
+                    background: 'linear-gradient(135deg, rgba(25, 118, 210, 0.05) 0%, rgba(0, 0, 0, 0) 100%)',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    '&:hover': {
+                      transform: 'translateY(-8px) scale(1.02)',
+                      borderColor: 'primary.main',
+                      boxShadow: `0 12px 30px -10px ${theme.palette.primary.main}66`,
+                      '& .magic-icon': {
+                        transform: 'rotate(15deg) scale(1.2)',
+                        filter: `drop-shadow(0 0 8px ${theme.palette.primary.main})`
+                      }
+                    }
+                  }}
+                >
+                  <CardActionArea
+                    onClick={() => setSelectedSpell(spell)}
+                    sx={{ height: '160px' }}
+                  >
+                    <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                      <AutoFixHigh 
+                        className="magic-icon"
+                        sx={{ 
+                          mb: 2, 
+                          fontSize: 40, 
+                          color: 'primary.main',
+                          transition: 'all 0.4s ease'
+                        }} 
+                      />
+                      <Typography 
+                        variant="h5" 
+                        sx={{ 
+                          fontWeight: 800, 
+                          textTransform: 'capitalize',
+                          letterSpacing: '0.5px'
+                        }}
+                      >
+                        {spell.name}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Fade>
+            </Grid>
+          ))}
+      </Grid>
+
+      {!loading && totalPages > 1 && (
+        <Box sx={{ mt: 8, display: 'flex', justifyContent: 'center' }}>
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+            size="large"
+            shape="rounded"
+            sx={{
+              '& .MuiPaginationItem-root': {
+                fontWeight: 'bold',
+                border: '1px solid rgba(201, 166, 107, 0.2)'
+              }
+            }}
+          />
         </Box>
-    );
+      )}
+
+      {/* Spell Detail Dialog - Grimorio Style */}
+      <Dialog
+        open={Boolean(selectedSpell)}
+        onClose={() => setSelectedSpell(null)}
+        fullWidth
+        maxWidth="xs"
+        TransitionComponent={Fade}
+        TransitionProps={{ timeout: 400 }}
+        PaperProps={{
+          sx: { 
+            borderRadius: 6, 
+            p: 1, 
+            position: 'relative',
+            background: 'linear-gradient(180deg, background.paper 0%, rgba(201, 166, 107, 0.05) 100%)',
+            border: '2px solid rgba(201, 166, 107, 0.2)'
+          }
+        }}
+      >
+        <IconButton
+          onClick={() => setSelectedSpell(null)}
+          sx={{ position: 'absolute', right: 16, top: 16, color: 'text.secondary', zIndex: 1 }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DialogTitle sx={{ pt: 4, pb: 1, textAlign: 'center' }}>
+          <Typography 
+            variant="caption" 
+            sx={{ 
+              fontWeight: 800, 
+              textTransform: 'uppercase', 
+              letterSpacing: 2,
+              color: 'primary.main',
+              display: 'block',
+              mb: 1
+            }}
+          >
+            Ancient Incantation
+          </Typography>
+          <Typography variant="h3" sx={{ fontWeight: 900, textTransform: 'capitalize' }}>
+            {selectedSpell?.name}
+          </Typography>
+        </DialogTitle>
+
+        <DialogContent sx={{ textAlign: 'center', pb: 4 }}>
+          <Box sx={{ 
+            py: 3, 
+            px: 2,
+            mt: 2,
+            borderTop: '1px solid', 
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            position: 'relative'
+          }}>
+            {/* Decoración tipo pergamino */}
+            <AutoFixHigh sx={{ 
+              position: 'absolute', 
+              top: -12, 
+              left: '50%', 
+              transform: 'translateX(-50%)', 
+              bgcolor: 'background.paper',
+              px: 1,
+              fontSize: 24,
+              color: 'rgba(201, 166, 107, 0.4)'
+            }} />
+            
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                fontSize: '1.2rem', 
+                lineHeight: 1.7, 
+                color: 'text.secondary',
+                fontStyle: 'italic'
+              }}
+            >
+              "{selectedSpell?.description}"
+            </Typography>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    </Container>
+  );
 };
 
 export default Spells;
