@@ -1,6 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* --- Tus Colores Personalizados --- */
+  --color-color1: #D7573B;
+  --color-color2: #FA9C0F;
+  --color-color3: #152F37;
+  --color-color4: #35528B;
+
+  /* --- Tu Fuente Poppins --- */
+  --font-poppins: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
 
 @font-face {
   font-family: 'HarryP';

@@ -30,21 +30,25 @@ const Characters = () => {
   const totalPages = Math.ceil(responseCount / itemsPerPage);
 
   // Renderizamos Skeletons mientras carga
-  const renderSkeletons = () => (
-    <Grid container spacing={4}>
-      {[...Array(itemsPerPage)].map((_, index) => (
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={`skeleton-${index}`}>
-          <Skeleton
-            variant="rectangular"
-            height={400}
-            sx={{ borderRadius: 4, bgcolor: 'rgba(201, 166, 107, 0.1)' }}
-          />
-          <Skeleton variant="text" sx={{ mt: 1, fontSize: '2rem', width: '80%' }} />
-          <Skeleton variant="text" sx={{ width: '40%' }} />
-        </Grid>
-      ))}
-    </Grid>
-  );
+  const renderSkeletons = () => {
+    // Creamos un array vacío con la longitud deseada
+    return (
+      <Grid container spacing={4}>
+        {Array.from({ length: itemsPerPage }).map((_, index) => (
+          // Usamos un prefijo más específico o incluso un ID generado para esta sesión
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={`loader-item-${index}`}>
+            <Skeleton
+              variant="rectangular"
+              height={400}
+              sx={{ borderRadius: 4, bgcolor: 'rgba(201, 166, 107, 0.1)' }}
+            />
+            <Skeleton variant="text" sx={{ mt: 1, fontSize: '2rem', width: '80%' }} />
+            <Skeleton variant="text" sx={{ width: '40%' }} />
+          </Grid>
+        ))}
+      </Grid>
+    );
+  };
 
   return (
     <Container
