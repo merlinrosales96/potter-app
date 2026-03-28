@@ -71,7 +71,7 @@ const Houses = () => {
                         const houseColor = typeColors[item.name.toLowerCase()] || typeColors.normal;
 
                         return (
-                            <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={index}>
+                            <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={item.name}>
                                 <Fade in timeout={500 + index * 200}>
                                     <Card
                                         sx={{

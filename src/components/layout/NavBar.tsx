@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { 
-  Box, AppBar, Toolbar, Container, Avatar, IconButton, 
-  Drawer, Divider, Typography, Button, Stack 
+import {
+  Box, AppBar, Toolbar, Container, Avatar, IconButton,
+  Drawer, Divider, Typography, Button, Stack
 } from '@mui/material';
 import { Menu as MenuIcon, Close as CloseIcon, AutoFixHigh } from '@mui/icons-material'; // Icono de varita para el toque mágico
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -17,7 +17,7 @@ function NavBar() {
   // Efecto para cambiar el estilo al hacer scroll
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -41,7 +41,7 @@ function NavBar() {
             alignItems: 'center',
             justifyContent: 'space-between',
             borderRadius: scrolled ? '15px' : '999px', // De cápsula a rectángulo redondeado
-            bgcolor: scrolled ? 'rgba(15, 15, 25, 0.85)' : 'rgba(201, 166, 107, 0.2)', 
+            bgcolor: scrolled ? 'rgba(15, 15, 25, 0.85)' : 'rgba(201, 166, 107, 0.2)',
             backdropFilter: 'blur(16px)',
             border: '1px solid',
             borderColor: scrolled ? 'rgba(201, 166, 107, 0.3)' : 'rgba(255, 255, 255, 0.1)',
@@ -53,7 +53,7 @@ function NavBar() {
         >
           {/* Logo Section con Brillo Mágico */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <Box sx={{ 
+            <Box sx={{
               position: 'relative',
               '&::after': {
                 content: '""',
@@ -64,22 +64,22 @@ function NavBar() {
                 transition: '0.3s'
               }
             }}>
-              <Avatar 
-                src={logo} 
-                sx={{ 
-                  width: 45, height: 45, 
+              <Avatar
+                src={logo}
+                sx={{
+                  width: 45, height: 45,
                   border: '1px solid rgba(201, 166, 107, 0.5)',
                   transition: '0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                  '&:hover': { transform: 'rotate(360deg) scale(1.15)' } 
-                }} 
+                  '&:hover': { transform: 'rotate(360deg) scale(1.15)' }
+                }}
               />
             </Box>
           </Link>
 
           {/* Desktop Navigation - Estilo Grimorio */}
-          <Stack 
-            direction="row" 
-            spacing={1} 
+          <Stack
+            direction="row"
+            spacing={1}
             sx={{ display: { xs: 'none', md: 'flex' } }}
           >
             {NavButtons.map((item) => {
@@ -124,8 +124,8 @@ function NavBar() {
           {/* Botón de Modo Mágico (Mobile toggle con estilo) */}
           <IconButton
             onClick={toggleDrawer(true)}
-            sx={{ 
-              display: { md: 'none' }, 
+            sx={{
+              display: { md: 'none' },
               color: '#C9A66B',
               border: '1px solid rgba(201, 166, 107, 0.3)'
             }}
