@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Grid, 
+  Grid,
   Typography, Pagination, Box, Container,
   Card, CardContent, CardActionArea,
   Dialog, DialogTitle, DialogContent, IconButton, Fade,
@@ -53,12 +53,12 @@ const Spells = () => {
       </Snackbar>
 
       <Box sx={{ textAlign: 'center', mb: 8 }}>
-        <Typography 
-          variant="h2" 
-          sx={{ 
-            fontWeight: 900, 
+        <Typography
+          variant="h2"
+          sx={{
+            fontWeight: 900,
             letterSpacing: '-1px',
-            textShadow: '0 0 20px rgba(201, 166, 107, 0.3)' 
+            textShadow: '0 0 20px rgba(201, 166, 107, 0.3)'
           }}
         >
           Magic Spells
@@ -111,19 +111,19 @@ const Spells = () => {
                     sx={{ height: '160px' }}
                   >
                     <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                      <AutoFixHigh 
+                      <AutoFixHigh
                         className="magic-icon"
-                        sx={{ 
-                          mb: 2, 
-                          fontSize: 40, 
+                        sx={{
+                          mb: 2,
+                          fontSize: 40,
                           color: 'primary.main',
                           transition: 'all 0.4s ease'
-                        }} 
+                        }}
                       />
-                      <Typography 
-                        variant="h5" 
-                        sx={{ 
-                          fontWeight: 800, 
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontWeight: 800,
                           textTransform: 'capitalize',
                           letterSpacing: '0.5px'
                         }}
@@ -166,9 +166,9 @@ const Spells = () => {
         TransitionComponent={Fade}
         TransitionProps={{ timeout: 400 }}
         PaperProps={{
-          sx: { 
-            borderRadius: 6, 
-            p: 1, 
+          sx: {
+            borderRadius: 6,
+            p: 1,
             position: 'relative',
             background: 'linear-gradient(180deg, background.paper 0%, rgba(201, 166, 107, 0.05) 100%)',
             border: '2px solid rgba(201, 166, 107, 0.2)'
@@ -182,12 +182,12 @@ const Spells = () => {
           <CloseIcon />
         </IconButton>
 
-        <DialogTitle sx={{ pt: 4, pb: 1, textAlign: 'center' }}>
-          <Typography 
-            variant="caption" 
-            sx={{ 
-              fontWeight: 800, 
-              textTransform: 'uppercase', 
+        <DialogTitle component="div" sx={{ pt: 4, pb: 1, textAlign: 'center' }}>
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 800,
+              textTransform: 'uppercase',
               letterSpacing: 2,
               color: 'primary.main',
               display: 'block',
@@ -196,38 +196,39 @@ const Spells = () => {
           >
             Ancient Incantation
           </Typography>
+          {/* Ahora este h3 vive feliz dentro de un div */}
           <Typography variant="h3" sx={{ fontWeight: 900, textTransform: 'capitalize' }}>
             {selectedSpell?.name}
           </Typography>
         </DialogTitle>
 
         <DialogContent sx={{ textAlign: 'center', pb: 4 }}>
-          <Box sx={{ 
-            py: 3, 
+          <Box sx={{
+            py: 3,
             px: 2,
             mt: 2,
-            borderTop: '1px solid', 
+            borderTop: '1px solid',
             borderBottom: '1px solid',
             borderColor: 'divider',
             position: 'relative'
           }}>
             {/* Decoración tipo pergamino */}
-            <AutoFixHigh sx={{ 
-              position: 'absolute', 
-              top: -12, 
-              left: '50%', 
-              transform: 'translateX(-50%)', 
+            <AutoFixHigh sx={{
+              position: 'absolute',
+              top: -12,
+              left: '50%',
+              transform: 'translateX(-50%)',
               bgcolor: 'background.paper',
               px: 1,
               fontSize: 24,
               color: 'rgba(201, 166, 107, 0.4)'
             }} />
-            
-            <Typography 
-              variant="body1" 
-              sx={{ 
-                fontSize: '1.2rem', 
-                lineHeight: 1.7, 
+
+            <Typography
+              variant="body1"
+              sx={{
+                fontSize: '1.2rem',
+                lineHeight: 1.7,
                 color: 'text.secondary',
                 fontStyle: 'italic'
               }}
