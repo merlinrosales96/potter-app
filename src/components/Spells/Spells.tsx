@@ -1,19 +1,14 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Grid, 
-  Typography, Pagination, Box, Container,
-  Card, CardContent, CardActionArea,
-  Dialog, DialogTitle, DialogContent, IconButton, Fade,
-  Snackbar, Alert, Skeleton, Stack, useTheme
+  Grid, Typography, Pagination, Box, Container,
+  CardActionArea, Fade, Skeleton, Stack
 } from '@mui/material';
-import { Close as CloseIcon, AutoFixHigh } from '@mui/icons-material';
 import { itemsPerPage } from '../../utils/Utils';
 import { useSpellList } from '../../hooks/useSpells';
 import { Spell } from '../../utils/Types';
 
 const Spells = () => {
-  const theme = useTheme();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -21,7 +16,6 @@ const Spells = () => {
   const { data = [], loading, responseCount = 0 } = useSpellList(page);
 
   const [selectedSpell, setSelectedSpell] = useState<Spell | null>(null);
-  const [errorOpen, setErrorOpen] = useState(false);
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     navigate(`/spells/${value}`);
@@ -30,214 +24,243 @@ const Spells = () => {
 
   const totalPages = Math.ceil(responseCount / itemsPerPage);
 
-  // Estilo común para los Skeletons mágicos
-  const skeletonMagicSx = {
-    bgcolor: 'rgba(201, 166, 107, 0.08)',
-    borderRadius: 4
-  };
-
   return (
-    <Container
-      component="main"
-      maxWidth="lg"
-      sx={{
-        py: 8,
-        mt: { xs: 10, md: 14 },
-        minHeight: '100vh'
-      }}
-    >
-      <Snackbar open={errorOpen} autoHideDuration={5000} onClose={() => setErrorOpen(false)}>
-        <Alert severity="error" variant="filled" sx={{ width: '100%' }}>
-          Spell not found
-        </Alert>
-      </Snackbar>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#06040a' }}>
+      <Container component="main" maxWidth="lg" sx={{ py: 8, mt: { xs: 10, md: 12 } }}>
 
-      <Box sx={{ textAlign: 'center', mb: 8 }}>
-        <Typography 
-          variant="h2" 
-          sx={{ 
-            fontWeight: 900, 
-            letterSpacing: '-1px',
-            textShadow: '0 0 20px rgba(201, 166, 107, 0.3)' 
-          }}
-        >
-          Magic Spells
-        </Typography>
-        <Typography variant="h6" color="text.secondary" sx={{ fontStyle: 'italic', opacity: 0.8 }}>
-          "The wand chooses the wizard... but the wizard masters the spell"
-        </Typography>
-      </Box>
+        {/* Header */}
+        <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <Typography sx={{
+            fontFamily: '"Cinzel", serif', fontSize: '9px',
+            letterSpacing: '8px', color: 'rgba(212,175,55,0.4)',
+            textTransform: 'uppercase', mb: 2,
+          }}>
+            ✦ &nbsp; Ancient Incantations &nbsp; ✦
+          </Typography>
+          <Typography variant="h2" sx={{
+            fontFamily: '"Cinzel", serif', fontWeight: 700,
+            color: '#e8dcc8', mb: 2, fontSize: { xs: '2rem', md: '2.8rem' },
+            letterSpacing: '2px',
+          }}>
+            Magic Spells
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 3 }}>
+            <Box sx={{ height: '1px', width: 60, background: 'linear-gradient(to right, transparent, rgba(212,175,55,0.35))' }} />
+            <Typography sx={{ color: 'rgba(212,175,55,0.35)', fontSize: '10px' }}>✦</Typography>
+            <Box sx={{ height: '1px', width: 60, background: 'linear-gradient(to left, transparent, rgba(212,175,55,0.35))' }} />
+          </Box>
+          <Typography sx={{
+            fontFamily: '"Crimson Text", serif', fontStyle: 'italic',
+            fontSize: '1.1rem', color: 'rgba(232,220,200,0.35)',
+          }}>
+            "The wand chooses the wizard... but the wizard masters the spell"
+          </Typography>
+        </Box>
 
-      <Grid container spacing={3}>
-        {loading
-          ? Array.from(new Array(itemsPerPage)).map((_, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={`spell-skeleton-${index}`}>
-              <Card sx={{ ...skeletonMagicSx, height: '160px', border: '1px solid rgba(201, 166, 107, 0.1)' }}>
-                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
-                  <Stack spacing={2} alignItems="center" sx={{ width: '100%' }}>
-                    <Skeleton variant="circular" width={45} height={45} animation="wave" sx={{ bgcolor: 'rgba(201, 166, 107, 0.15)' }} />
-                    <Skeleton variant="text" width="70%" height={30} animation="wave" sx={{ bgcolor: 'rgba(201, 166, 107, 0.15)' }} />
+        {/* Grid */}
+        <Grid container spacing={2}>
+          {loading
+            ? Array.from(new Array(itemsPerPage)).map((_, i) => (
+              <Grid size={{ xs: 6, sm: 4, md: 3 }} key={`sk-${i}`}>
+                <Box sx={{
+                  height: 130, border: '1px solid rgba(212,175,55,0.07)',
+                  borderRadius: '2px', bgcolor: 'rgba(14,11,20,0.9)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Stack spacing={1.5} alignItems="center" sx={{ width: '70%' }}>
+                    <Skeleton variant="circular" width={32} height={32} sx={{ bgcolor: 'rgba(212,175,55,0.07)' }} />
+                    <Skeleton variant="text" width="100%" height={20} sx={{ bgcolor: 'rgba(212,175,55,0.07)' }} />
                   </Stack>
                 </Box>
-              </Card>
-            </Grid>
-          ))
-          : data.map((spell: Spell, index: number) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={spell.id}>
-              <Fade in timeout={300 + index * 100}>
-                <Card
-                  sx={{
-                    height: '100%',
-                    borderRadius: 5,
-                    background: 'linear-gradient(135deg, rgba(25, 118, 210, 0.05) 0%, rgba(0, 0, 0, 0) 100%)',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    '&:hover': {
-                      transform: 'translateY(-8px) scale(1.02)',
-                      borderColor: 'primary.main',
-                      boxShadow: `0 12px 30px -10px ${theme.palette.primary.main}66`,
-                      '& .magic-icon': {
-                        transform: 'rotate(15deg) scale(1.2)',
-                        filter: `drop-shadow(0 0 8px ${theme.palette.primary.main})`
-                      }
-                    }
-                  }}
-                >
-                  <CardActionArea
+              </Grid>
+            ))
+            : data.map((spell: Spell, index: number) => (
+              <Grid size={{ xs: 6, sm: 4, md: 3 }} key={spell.id}>
+                <Fade in timeout={200 + index * 60}>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      height: 130,
+                      border: '1px solid rgba(212,175,55,0.1)',
+                      borderRadius: '2px',
+                      background: 'rgba(14,11,20,0.9)',
+                      overflow: 'hidden',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0, left: 0, right: 0, height: '1px',
+                        background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)',
+                        opacity: 0, transition: 'opacity 0.3s ease',
+                      },
+                      '&:hover': {
+                        border: '1px solid rgba(212,175,55,0.25)',
+                        transform: 'translateY(-4px)',
+                        boxShadow: '0 12px 30px -10px rgba(212,175,55,0.15)',
+                        bgcolor: 'rgba(20,16,30,0.97)',
+                        '&::before': { opacity: 1 },
+                        '& .spell-rune': { opacity: 0.6, transform: 'rotate(15deg) scale(1.15)' },
+                      },
+                    }}
                     onClick={() => setSelectedSpell(spell)}
-                    sx={{ height: '160px' }}
                   >
-                    <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                      <AutoFixHigh 
-                        className="magic-icon"
-                        sx={{ 
-                          mb: 2, 
-                          fontSize: 40, 
-                          color: 'primary.main',
-                          transition: 'all 0.4s ease'
-                        }} 
-                      />
-                      <Typography 
-                        variant="h5" 
-                        sx={{ 
-                          fontWeight: 800, 
-                          textTransform: 'capitalize',
-                          letterSpacing: '0.5px'
+                    <CardActionArea sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1.5, px: 2 }}>
+                      {/* Runa decorativa SVG */}
+                      <Box
+                        className="spell-rune"
+                        component="svg"
+                        viewBox="0 0 24 24"
+                        sx={{
+                          width: 22, height: 22,
+                          opacity: 0.25,
+                          transition: 'all 0.3s ease',
+                          color: '#d4af37',
+                          flexShrink: 0,
                         }}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
                       >
+                        <path d="M12 2L15 9H22L16.5 13.5L18.5 21L12 17L5.5 21L7.5 13.5L2 9H9L12 2Z" />
+                      </Box>
+
+                      <Typography sx={{
+                        fontFamily: '"Cinzel", serif',
+                        fontSize: '0.72rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.5px',
+                        color: '#e8dcc8',
+                        textAlign: 'center',
+                        lineHeight: 1.4,
+                        textTransform: 'capitalize',
+                      }}>
                         {spell.name}
                       </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Fade>
-            </Grid>
-          ))}
-      </Grid>
+                    </CardActionArea>
+                  </Box>
+                </Fade>
+              </Grid>
+            ))}
+        </Grid>
 
-      {!loading && totalPages > 1 && (
-        <Box sx={{ mt: 8, display: 'flex', justifyContent: 'center' }}>
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-            size="large"
-            shape="rounded"
+        {/* Paginación */}
+        {!loading && totalPages > 1 && (
+          <Box sx={{ mt: 8, display: 'flex', justifyContent: 'center' }}>
+            <Pagination
+              count={totalPages} page={page}
+              onChange={handlePageChange}
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  fontFamily: '"Cinzel", serif', fontSize: '0.7rem',
+                  color: 'rgba(232,220,200,0.4)',
+                  border: '1px solid rgba(212,175,55,0.1)', borderRadius: '2px',
+                  '&:hover': { color: '#d4af37', border: '1px solid rgba(212,175,55,0.3)', bgcolor: 'rgba(212,175,55,0.05)' },
+                  '&.Mui-selected': { color: '#d4af37', border: '1px solid rgba(212,175,55,0.4)', bgcolor: 'rgba(212,175,55,0.08)' },
+                },
+              }}
+            />
+          </Box>
+        )}
+
+        {/* Modal de detalle — estilo pergamino */}
+        {selectedSpell && (
+          <Box
+            onClick={() => setSelectedSpell(null)}
             sx={{
-              '& .MuiPaginationItem-root': {
-                fontWeight: 'bold',
-                border: '1px solid rgba(201, 166, 107, 0.2)'
-              }
-            }}
-          />
-        </Box>
-      )}
-
-      {/* Spell Detail Dialog - Grimorio Style */}
-      <Dialog
-        open={Boolean(selectedSpell)}
-        onClose={() => setSelectedSpell(null)}
-        fullWidth
-        maxWidth="xs"
-        TransitionComponent={Fade}
-        TransitionProps={{ timeout: 400 }}
-        PaperProps={{
-          sx: { 
-            borderRadius: 6, 
-            p: 1, 
-            position: 'relative',
-            background: 'linear-gradient(180deg, background.paper 0%, rgba(201, 166, 107, 0.05) 100%)',
-            border: '2px solid rgba(201, 166, 107, 0.2)'
-          }
-        }}
-      >
-        <IconButton
-          onClick={() => setSelectedSpell(null)}
-          sx={{ position: 'absolute', right: 16, top: 16, color: 'text.secondary', zIndex: 1 }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        <DialogTitle sx={{ pt: 4, pb: 1, textAlign: 'center' }}>
-          <Typography 
-            variant="caption" 
-            sx={{ 
-              fontWeight: 800, 
-              textTransform: 'uppercase', 
-              letterSpacing: 2,
-              color: 'primary.main',
-              display: 'block',
-              mb: 1
+              position: 'fixed', inset: 0, zIndex: 1300,
+              bgcolor: 'rgba(6,4,10,0.85)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              px: 2,
+              animation: 'fadeIn 0.2s ease',
+              '@keyframes fadeIn': { from: { opacity: 0 }, to: { opacity: 1 } },
             }}
           >
-            Ancient Incantation
-          </Typography>
-          <Typography variant="h3" sx={{ fontWeight: 900, textTransform: 'capitalize' }}>
-            {selectedSpell?.name}
-          </Typography>
-        </DialogTitle>
-
-        <DialogContent sx={{ textAlign: 'center', pb: 4 }}>
-          <Box sx={{ 
-            py: 3, 
-            px: 2,
-            mt: 2,
-            borderTop: '1px solid', 
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            position: 'relative'
-          }}>
-            {/* Decoración tipo pergamino */}
-            <AutoFixHigh sx={{ 
-              position: 'absolute', 
-              top: -12, 
-              left: '50%', 
-              transform: 'translateX(-50%)', 
-              bgcolor: 'background.paper',
-              px: 1,
-              fontSize: 24,
-              color: 'rgba(201, 166, 107, 0.4)'
-            }} />
-            
-            <Typography 
-              variant="body1" 
-              sx={{ 
-                fontSize: '1.2rem', 
-                lineHeight: 1.7, 
-                color: 'text.secondary',
-                fontStyle: 'italic'
+            <Box
+              onClick={(e) => e.stopPropagation()}
+              sx={{
+                width: '100%', maxWidth: 440,
+                background: '#0e0b17',
+                border: '1px solid rgba(212,175,55,0.2)',
+                borderRadius: '2px',
+                position: 'relative',
+                animation: 'slideUp 0.25s ease',
+                '@keyframes slideUp': { from: { opacity: 0, transform: 'translateY(16px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
               }}
             >
-              "{selectedSpell?.description}"
-            </Typography>
+              {/* Borde superior dorado */}
+              <Box sx={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.6), transparent)' }} />
+
+              {/* Botón cerrar */}
+              <Box
+                onClick={() => setSelectedSpell(null)}
+                sx={{
+                  position: 'absolute', top: 14, right: 14,
+                  width: 24, height: 24,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'rgba(232,220,200,0.25)', cursor: 'pointer', fontSize: '14px',
+                  border: '1px solid rgba(212,175,55,0.1)', borderRadius: '2px',
+                  transition: 'all 0.2s ease',
+                  '&:hover': { color: '#d4af37', border: '1px solid rgba(212,175,55,0.3)' },
+                }}
+              >
+                ✕
+              </Box>
+
+              <Box sx={{ px: 4, pt: 4, pb: 4, textAlign: 'center' }}>
+                {/* Label */}
+                <Typography sx={{
+                  fontFamily: '"Cinzel", serif', fontSize: '8px',
+                  letterSpacing: '4px', color: 'rgba(212,175,55,0.4)',
+                  textTransform: 'uppercase', mb: 1.5,
+                }}>
+                  Ancient Incantation
+                </Typography>
+
+                {/* Nombre del hechizo */}
+                <Typography sx={{
+                  fontFamily: '"Cinzel", serif', fontWeight: 700,
+                  fontSize: { xs: '1.3rem', md: '1.6rem' },
+                  color: '#e8dcc8', letterSpacing: '1px',
+                  textTransform: 'capitalize', mb: 3,
+                }}>
+                  {selectedSpell.name}
+                </Typography>
+
+                {/* Divider con runa */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <Box sx={{ flex: 1, height: '1px', bgcolor: 'rgba(212,175,55,0.1)' }} />
+                  <Typography sx={{ color: 'rgba(212,175,55,0.3)', fontSize: '10px' }}>✦</Typography>
+                  <Box sx={{ flex: 1, height: '1px', bgcolor: 'rgba(212,175,55,0.1)' }} />
+                </Box>
+
+                {/* Descripción */}
+                <Typography sx={{
+                  fontFamily: '"Crimson Text", serif',
+                  fontStyle: 'italic',
+                  fontSize: '1.1rem',
+                  lineHeight: 1.8,
+                  color: 'rgba(232,220,200,0.55)',
+                }}>
+                  "{selectedSpell.description}"
+                </Typography>
+              </Box>
+
+              {/* Ornamentos esquina */}
+              {[
+                { pos: { top: 8, left: 8 }, corner: 'tl' },
+                { pos: { top: 8, right: 8 }, corner: 'tr' },
+                { pos: { bottom: 8, left: 8 }, corner: 'bl' },
+                { pos: { bottom: 8, right: 8 }, corner: 'br' },
+              ].map(({ pos, corner }) => (
+                <Box key={corner} sx={{ position: 'absolute', ...pos, width: 6, height: 6, border: '1px solid rgba(212,175,55,0.2)' }} />
+              ))}
+            </Box>
           </Box>
-        </DialogContent>
-      </Dialog>
-    </Container>
+        )}
+
+      </Container>
+    </Box>
   );
 };
 
