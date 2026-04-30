@@ -1,176 +1,153 @@
 import { Link } from 'react-router-dom';
-import {
-    Grid,
-    Typography,
-    Box,
-    Container,
-    Card,
-    CardActionArea,
-    CardMedia,
-    CardContent,
-    Fade,
-    Skeleton,
-} from '@mui/material';
+import { Grid, Typography, Box, Container, Fade } from '@mui/material';
 import { houses } from "../../utils/data/houses/houses";
-import { typeColors } from '../../utils/Utils';
+
+const houseData: { [key: string]: { border: string; glow: string; text: string; badge: string; motto: string } } = {
+  gryffindor: { border: '#ae0001', glow: 'rgba(174,0,1,0.3)', text: '#e8a0a0', badge: 'rgba(174,0,1,0.12)', motto: 'Courage & Bravery' },
+  slytherin:  { border: '#2a6e42', glow: 'rgba(26,71,42,0.35)', text: '#5a9e6f', badge: 'rgba(26,71,42,0.18)', motto: 'Ambition & Cunning' },
+  ravenclaw:  { border: '#222e9e', glow: 'rgba(14,26,143,0.3)', text: '#7b8fe8', badge: 'rgba(14,26,143,0.12)', motto: 'Wisdom & Wit' },
+  hufflepuff: { border: '#d4a020', glow: 'rgba(212,160,20,0.3)', text: '#f0c040', badge: 'rgba(212,160,20,0.12)', motto: 'Loyalty & Patience' },
+};
 
 const Houses = () => {
-    const loading = houses.length === 0;
+  return (
+    <Box sx={{ minHeight: '100vh', bgcolor: '#06040a' }}>
+      <Container component="main" maxWidth="lg" sx={{ py: 8, mt: { xs: 10, md: 12 } }}>
 
-    return (
-        <Container
-            component="main"
-            maxWidth="lg"
-            sx={{
-                py: 8,
-                mt: { xs: 10, md: 14 }
-            }}
-        >
-            {/* Header Section */}
-            <Box sx={{ textAlign: 'center', mb: 8 }}>
-                <Typography
-                    variant="h2"
-                    sx={{
-                        fontWeight: 900,
-                        mb: 2,
-                        letterSpacing: '-1px'
-                    }}
-                >
-                    Hogwarts Houses
-                </Typography>
-                <Typography variant="h6" color="text.secondary">
-                    Select a house to explore its members
-                </Typography>
-            </Box>
+        {/* Header */}
+        <Box sx={{ textAlign: 'center', mb: 10 }}>
+          <Typography sx={{
+            fontFamily: '"Cinzel", serif', fontSize: '9px',
+            letterSpacing: '8px', color: 'rgba(212,175,55,0.4)',
+            textTransform: 'uppercase', mb: 2,
+          }}>
+            ✦ &nbsp; Founded by the Four &nbsp; ✦
+          </Typography>
+          <Typography variant="h2" sx={{
+            fontFamily: '"Cinzel", serif', fontWeight: 700,
+            color: '#e8dcc8', mb: 2, fontSize: { xs: '2rem', md: '3rem' },
+            letterSpacing: '2px',
+          }}>
+            Hogwarts Houses
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 3 }}>
+            <Box sx={{ height: '1px', width: 60, background: 'linear-gradient(to right, transparent, rgba(212,175,55,0.35))' }} />
+            <Typography sx={{ color: 'rgba(212,175,55,0.35)', fontSize: '10px' }}>✦</Typography>
+            <Box sx={{ height: '1px', width: 60, background: 'linear-gradient(to left, transparent, rgba(212,175,55,0.35))' }} />
+          </Box>
+          <Typography sx={{
+            fontFamily: '"Crimson Text", serif', fontStyle: 'italic',
+            fontSize: '1.1rem', color: 'rgba(232,220,200,0.4)',
+          }}>
+            Select a house to explore its members
+          </Typography>
+        </Box>
 
-            {/* Grid de Casas */}
-            <Grid container spacing={4}>
-                {loading ? (
-                    Array.from(new Array(4)).map((_, index) => (
-                        <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={`house-skeleton-${index}`}>
-                            <Card sx={{ borderRadius: 5, border: '2px solid', borderColor: 'divider' }}>
-                                <Skeleton
-                                    variant="rectangular"
-                                    height={280}
-                                    animation="wave"
-                                    sx={{ bgcolor: 'rgba(201, 166, 107, 0.08)' }}
-                                />
-                                <CardContent sx={{ textAlign: 'center', py: 3 }}>
-                                    <Skeleton
-                                        variant="text"
-                                        width="60%"
-                                        height={32}
-                                        sx={{ mx: 'auto', bgcolor: 'rgba(201, 166, 107, 0.08)' }}
-                                    />
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))
-                ) : (
-                    houses.map((item, index) => {
-                        const houseColor = typeColors[item.name.toLowerCase()] || typeColors.normal;
+        {/* Grid */}
+        <Grid container spacing={3}>
+          {houses.map((item, index) => {
+            const key = item.name.toLowerCase();
+            const accent = houseData[key] || { border: 'rgba(212,175,55,0.3)', glow: 'rgba(212,175,55,0.2)', text: '#d4af37', badge: 'rgba(212,175,55,0.1)', motto: '' };
 
-                        return (
-                            <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={item.name}>
-                                <Fade in timeout={500 + index * 200}>
-                                    <Card
-                                        sx={{
-                                            borderRadius: 5,
-                                            border: '2px solid',
-                                            borderColor: 'divider',
-                                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                                            overflow: 'hidden',
-                                            position: 'relative',
-                                            '&:hover': {
-                                                transform: 'translateY(-12px)',
-                                                borderColor: houseColor,
-                                                boxShadow: `0 20px 40px -15px ${houseColor}88`,
-                                                '& .house-image': {
-                                                    transform: 'scale(1.1)',
-                                                    filter: 'sepia(0%) brightness(1.1)',
-                                                },
-                                                '& .house-overlay': {
-                                                    opacity: 1,
-                                                }
-                                            }
-                                        }}
-                                    >
-                                        <Link
-                                            to={`/houses/characters/${item.name}/1`}
-                                            style={{ textDecoration: 'none', color: 'inherit' }}
-                                        >
-                                            <CardActionArea sx={{ height: '100%' }}>
-                                                {/* Contenedor de Imagen con Efecto de Baño de Color */}
-                                                <Box
-                                                    sx={{
-                                                        height: '280px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        p: 4,
-                                                        bgcolor: 'background.neutral',
-                                                        overflow: 'hidden',
-                                                        position: 'relative'
-                                                    }}
-                                                >
-                                                    {/* Overlay de color de la casa */}
-                                                    <Box 
-                                                        className="house-overlay"
-                                                        sx={{
-                                                            position: 'absolute',
-                                                            top: 0,
-                                                            left: 0,
-                                                            width: '100%',
-                                                            height: '100%',
-                                                            background: `linear-gradient(to top, ${houseColor}66, transparent)`,
-                                                            zIndex: 2,
-                                                            opacity: 0,
-                                                            transition: 'opacity 0.4s ease',
-                                                            pointerEvents: 'none',
-                                                        }}
-                                                    />
+            return (
+              <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={item.name}>
+                <Fade in timeout={400 + index * 150}>
+                  <Link to={`/houses/characters/${item.name}/1`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
+                    <Box sx={{
+                      position: 'relative',
+                      height: 360,
+                      border: '1px solid rgba(212,175,55,0.1)',
+                      borderRadius: '2px',
+                      overflow: 'hidden',
+                      background: 'rgba(14,11,20,0.9)',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0, left: 0, right: 0, height: '2px',
+                        background: `linear-gradient(90deg, transparent, ${accent.border}, transparent)`,
+                        opacity: 0, transition: 'opacity 0.4s ease',
+                        zIndex: 3,
+                      },
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute', inset: 0,
+                        background: `radial-gradient(ellipse at center, ${accent.badge} 0%, transparent 70%)`,
+                        opacity: 0, transition: 'opacity 0.4s ease',
+                        zIndex: 0,
+                      },
+                      '&:hover': {
+                        border: `1px solid ${accent.border}44`,
+                        transform: 'translateY(-8px)',
+                        boxShadow: `0 20px 50px -15px ${accent.glow}`,
+                        '&::before': { opacity: 1 },
+                        '&::after': { opacity: 1 },
+                        '& .house-crest': { transform: 'scale(1.08)', filter: 'brightness(1.1) saturate(1.1)' },
+                        '& .house-name-text': { color: accent.text },
+                      },
+                    }}>
+                      {/* Imagen del escudo */}
+                      <Box sx={{ position: 'relative', zIndex: 1, mb: 3, flex: 1, display: 'flex', alignItems: 'center' }}>
+                        <Box
+                          className="house-crest"
+                          component="img"
+                          src={item.image}
+                          alt={item.name}
+                          sx={{
+                            maxHeight: 200,
+                            maxWidth: 160,
+                            objectFit: 'contain',
+                            filter: 'brightness(0.85)',
+                            transition: 'all 0.4s ease',
+                          }}
+                        />
+                      </Box>
 
-                                                    <CardMedia
-                                                        className="house-image"
-                                                        component="img"
-                                                        image={item.image}
-                                                        alt={item.name}
-                                                        sx={{
-                                                            height: '100%',
-                                                            width: 'auto',
-                                                            objectFit: 'contain',
-                                                            transition: 'all 0.5s ease',
-                                                            filter: 'brightness(0.9)',
-                                                            zIndex: 1
-                                                        }}
-                                                    />
-                                                </Box>
+                      {/* Nombre y motto */}
+                      <Box sx={{ position: 'relative', zIndex: 1, textAlign: 'center', pb: 3 }}>
+                        <Typography
+                          className="house-name-text"
+                          sx={{
+                            fontFamily: '"Cinzel", serif',
+                            fontSize: '0.9rem',
+                            fontWeight: 700,
+                            letterSpacing: '3px',
+                            color: '#e8dcc8',
+                            textTransform: 'uppercase',
+                            mb: 0.5,
+                            transition: 'color 0.4s ease',
+                          }}
+                        >
+                          {item.name}
+                        </Typography>
+                        <Typography sx={{
+                          fontFamily: '"Crimson Text", serif',
+                          fontStyle: 'italic',
+                          fontSize: '0.8rem',
+                          color: 'rgba(232,220,200,0.3)',
+                          letterSpacing: '0.5px',
+                        }}>
+                          {accent.motto}
+                        </Typography>
+                      </Box>
 
-                                                <CardContent sx={{ textAlign: 'center', py: 3, bgcolor: 'background.paper' }}>
-                                                    <Typography
-                                                        variant="h5"
-                                                        sx={{
-                                                            fontWeight: 800,
-                                                            textTransform: 'uppercase',
-                                                            letterSpacing: '1px',
-                                                            color: houseColor,
-                                                            textShadow: (theme) => theme.palette.mode === 'dark' ? '0 2px 4px rgba(0,0,0,0.5)' : 'none'
-                                                        }}
-                                                    >
-                                                        {item.name}
-                                                    </Typography>
-                                                </CardContent>
-                                            </CardActionArea>
-                                        </Link>
-                                    </Card>
-                                </Fade>
-                            </Grid>
-                        );
-                    })
-                )}
-            </Grid>
-        </Container>
-    );
-}
+                      {/* Ornamentos de esquina */}
+                      {['tl','tr','bl','br'].map((corner) => <Box key={corner} />)}
+                    </Box>
+                  </Link>
+                </Fade>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Container>
+    </Box>
+  );
+};
 
 export default Houses;
