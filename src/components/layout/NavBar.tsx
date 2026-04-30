@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
-import {
-  Box, AppBar, Toolbar, Container, Avatar, IconButton,
-  Drawer, Divider, Typography, Button, Stack
-} from '@mui/material';
-import { Menu as MenuIcon, Close as CloseIcon, AutoFixHigh } from '@mui/icons-material'; // Icono de varita para el toque mágico
+import { Box, Container, IconButton, Drawer, Typography, Button, Stack } from '@mui/material';
+import { Menu as MenuIcon, Close as CloseIcon } from '@mui/icons-material';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../../assets/images/LOGO.webp';
 import { NavButtons } from '../../utils/data/layout/layout';
@@ -14,104 +11,105 @@ function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Efecto para cambiar el estilo al hacer scroll
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleDrawer = (newOpen: boolean) => () => setOpen(newOpen);
-
   return (
-    <AppBar
-      position="fixed"
+    <Box
+      component="header"
       sx={{
-        boxShadow: 0,
-        bgcolor: 'transparent',
-        backgroundImage: 'none',
-        mt: scrolled ? 1 : 2, // Se pega más arriba al bajar
-        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        position: 'fixed',
+        top: 0, left: 0, right: 0,
+        zIndex: 1100,
+        pt: scrolled ? 0 : 1,
+        transition: 'padding 0.4s ease',
       }}
     >
-      <Container maxWidth="lg">
-        <Toolbar
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderRadius: scrolled ? '15px' : '999px', // De cápsula a rectángulo redondeado
-            bgcolor: scrolled ? 'rgba(15, 15, 25, 0.85)' : 'rgba(201, 166, 107, 0.2)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid',
-            borderColor: scrolled ? 'rgba(201, 166, 107, 0.3)' : 'rgba(255, 255, 255, 0.1)',
-            px: { xs: 2, sm: 4 },
-            height: scrolled ? 60 : 70,
-            transition: 'all 0.4s ease',
-            boxShadow: scrolled ? '0 10px 30px rgba(0,0,0,0.5)' : 'none',
-          }}
-        >
-          {/* Logo Section con Brillo Mágico */}
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <Box sx={{
-              position: 'relative',
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                top: 0, left: 0, right: 0, bottom: 0,
-                borderRadius: '50%',
-                boxShadow: scrolled ? '0 0 15px #C9A66B' : 'none',
-                transition: '0.3s'
-              }
+      {/* Fondo del navbar */}
+      <Box sx={{
+        position: 'absolute', inset: 0,
+        background: scrolled
+          ? 'rgba(6,4,10,0.92)'
+          : 'linear-gradient(to bottom, rgba(6,4,10,0.8), transparent)',
+        backdropFilter: scrolled ? 'blur(12px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(212,175,55,0.12)' : 'none',
+        transition: 'all 0.4s ease',
+      }} />
+
+      <Container maxWidth="lg" sx={{ position: 'relative' }}>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: scrolled ? 56 : 70,
+          transition: 'height 0.4s ease',
+        }}>
+          {/* Logo */}
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
+            <Box
+              component="img"
+              src={logo}
+              alt="Hogwarts"
+              sx={{
+                width: scrolled ? 34 : 40,
+                height: scrolled ? 34 : 40,
+                objectFit: 'contain',
+                filter: 'drop-shadow(0 0 8px rgba(212,175,55,0.3))',
+                transition: 'all 0.4s ease',
+                '&:hover': { filter: 'drop-shadow(0 0 14px rgba(212,175,55,0.6))' },
+              }}
+            />
+            <Typography sx={{
+              fontFamily: '"Cinzel", serif',
+              fontSize: scrolled ? '0.8rem' : '0.9rem',
+              fontWeight: 700,
+              letterSpacing: '3px',
+              color: '#d4af37',
+              transition: 'all 0.4s ease',
+              display: { xs: 'none', sm: 'block' },
             }}>
-              <Avatar
-                src={logo}
-                sx={{
-                  width: 45, height: 45,
-                  border: '1px solid rgba(201, 166, 107, 0.5)',
-                  transition: '0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                  '&:hover': { transform: 'rotate(360deg) scale(1.15)' }
-                }}
-              />
-            </Box>
+              HOGWARTS
+            </Typography>
           </Link>
 
-          {/* Desktop Navigation - Estilo Grimorio */}
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{ display: { xs: 'none', md: 'flex' } }}
-          >
+          {/* Desktop Nav */}
+          <Stack direction="row" spacing={0} sx={{ display: { xs: 'none', md: 'flex' } }}>
             {NavButtons.map((item) => {
-              const isActive = location.pathname === item.path;
+              const isActive = location.pathname.startsWith(item.path ?? '/') && item.path !== '/';
+              const isHome = item.path === '/' && location.pathname === '/';
+              const active = isActive || isHome;
               return (
                 <Button
                   key={item.name}
                   onClick={() => navigate(item.path ?? '/')}
                   sx={{
-                    color: isActive ? '#C9A66B' : 'text.primary',
-                    fontWeight: isActive ? 800 : 500,
-                    fontSize: '0.85rem',
-                    letterSpacing: '1.5px', // Estilo pergamino antiguo
+                    fontFamily: '"Cinzel", serif',
+                    fontSize: '0.65rem',
+                    letterSpacing: '2.5px',
                     textTransform: 'uppercase',
-                    px: 2,
+                    color: active ? '#d4af37' : 'rgba(232,220,200,0.5)',
+                    fontWeight: active ? 700 : 400,
+                    px: 2.5, py: 1,
+                    borderRadius: '2px',
                     position: 'relative',
-                    transition: '0.3s',
-                    '&::after': { // Línea mágica inferior
+                    transition: 'color 0.3s ease',
+                    bgcolor: 'transparent',
+                    '&::after': {
                       content: '""',
                       position: 'absolute',
-                      bottom: 5,
-                      left: '20%',
-                      width: isActive ? '60%' : '0%',
-                      height: '2px',
-                      bgcolor: '#C9A66B',
-                      boxShadow: '0 0 8px #C9A66B',
-                      transition: '0.3s',
+                      bottom: 4, left: '20%',
+                      width: active ? '60%' : '0%',
+                      height: '1px',
+                      bgcolor: '#d4af37',
+                      transition: 'width 0.3s ease',
                     },
                     '&:hover': {
+                      color: '#d4af37',
                       bgcolor: 'transparent',
-                      color: '#E8C07C',
-                      '&::after': { width: '60%' }
+                      '&::after': { width: '60%' },
                     },
                   }}
                 >
@@ -121,79 +119,83 @@ function NavBar() {
             })}
           </Stack>
 
-          {/* Botón de Modo Mágico (Mobile toggle con estilo) */}
+          {/* Mobile toggle */}
           <IconButton
-            onClick={toggleDrawer(true)}
+            onClick={() => setOpen(true)}
             sx={{
               display: { md: 'none' },
-              color: '#C9A66B',
-              border: '1px solid rgba(201, 166, 107, 0.3)'
+              color: 'rgba(212,175,55,0.7)',
+              border: '1px solid rgba(212,175,55,0.2)',
+              borderRadius: '2px',
+              p: 0.75,
+              '&:hover': { color: '#d4af37', border: '1px solid rgba(212,175,55,0.5)' },
             }}
           >
-            <MenuIcon />
+            <MenuIcon sx={{ fontSize: 20 }} />
           </IconButton>
-
-          {/* Mobile Drawer Estilo "Mapa del Merodeador" */}
-          <Drawer
-            anchor="right"
-            open={open}
-            onClose={toggleDrawer(false)}
-            PaperProps={{
-              sx: {
-                width: '100%',
-                maxWidth: 320,
-                bgcolor: 'rgba(18, 18, 28, 0.98)',
-                backgroundImage: 'radial-gradient(circle at top right, rgba(201, 166, 107, 0.1), transparent)',
-                backdropFilter: 'blur(10px)',
-                borderLeft: '2px solid #C9A66B',
-              }
-            }}
-          >
-            <Box sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 6 }}>
-                <Typography variant="h6" sx={{ color: '#C9A66B', fontWeight: 900, letterSpacing: 2 }}>
-                  LUMOS
-                </Typography>
-                <IconButton onClick={toggleDrawer(false)} sx={{ color: '#C9A66B' }}>
-                  <CloseIcon />
-                </IconButton>
-              </Box>
-
-              <Stack spacing={3}>
-                {NavButtons.map((item) => (
-                  <Button
-                    key={item.name}
-                    fullWidth
-                    onClick={() => {
-                      navigate(item.path);
-                      setOpen(false);
-                    }}
-                    startIcon={<AutoFixHigh sx={{ fontSize: 14 }} />}
-                    sx={{
-                      justifyContent: 'flex-start',
-                      color: location.pathname === item.path ? '#C9A66B' : '#F5F5F5',
-                      fontSize: '1.1rem',
-                      fontWeight: 500,
-                      letterSpacing: 2,
-                      '&:hover': { color: '#C9A66B', bgcolor: 'rgba(201, 166, 107, 0.05)' }
-                    }}
-                  >
-                    {item.name}
-                  </Button>
-                ))}
-              </Stack>
-
-              <Box sx={{ mt: 'auto', textAlign: 'center' }}>
-                <Divider sx={{ my: 3, borderColor: 'rgba(201, 166, 107, 0.2)' }} />
-                <Typography variant="caption" sx={{ color: 'rgba(201, 166, 107, 0.6)', letterSpacing: 1 }}>
-                  Mischief Managed
-                </Typography>
-              </Box>
-            </Box>
-          </Drawer>
-        </Toolbar>
+        </Box>
       </Container>
-    </AppBar>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={() => setOpen(false)}
+        PaperProps={{
+          sx: {
+            width: '100%', maxWidth: 300,
+            bgcolor: '#0a0810',
+            borderLeft: '1px solid rgba(212,175,55,0.15)',
+          },
+        }}
+      >
+        <Box sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 5 }}>
+            <Typography sx={{
+              fontFamily: '"Cinzel", serif', fontSize: '0.75rem',
+              letterSpacing: '4px', color: '#d4af37', textTransform: 'uppercase',
+            }}>
+              Lumos
+            </Typography>
+            <IconButton onClick={() => setOpen(false)} sx={{ color: 'rgba(212,175,55,0.4)', p: 0.5 }}>
+              <CloseIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          </Box>
+
+          <Stack spacing={0}>
+            {NavButtons.map((item) => (
+              <Button
+                key={item.name}
+                fullWidth
+                onClick={() => { navigate(item.path); setOpen(false); }}
+                sx={{
+                  justifyContent: 'flex-start',
+                  color: location.pathname === item.path ? '#d4af37' : 'rgba(232,220,200,0.45)',
+                  fontFamily: '"Cinzel", serif',
+                  fontSize: '0.8rem',
+                  letterSpacing: '3px',
+                  py: 1.5,
+                  borderRadius: 0,
+                  borderBottom: '1px solid rgba(212,175,55,0.06)',
+                  '&:hover': { color: '#d4af37', bgcolor: 'rgba(212,175,55,0.03)' },
+                }}
+              >
+                {item.name}
+              </Button>
+            ))}
+          </Stack>
+
+          <Box sx={{ mt: 'auto', textAlign: 'center' }}>
+            <Typography sx={{
+              fontFamily: '"Crimson Text", serif', fontStyle: 'italic',
+              fontSize: '0.85rem', color: 'rgba(212,175,55,0.25)', letterSpacing: '1px',
+            }}>
+              Mischief Managed
+            </Typography>
+          </Box>
+        </Box>
+      </Drawer>
+    </Box>
   );
 }
 
